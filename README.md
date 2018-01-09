@@ -15,32 +15,26 @@ This class takes place in the Winter/Spring Semester of 2018. The format will be
 
 ## Class Info
 
-|                             |                                             | 
-| ----------------------------|---------------------------------------------| 
-| **Course Title**            | Intro to R Programming                      | 
-| **Location**                | Claudia Nance Rollins 4001                  |  
-| **Instructor**              | Steve Pittard wsp@emory.edu                 |
-| **TA**                      | Dane Van Domelen dvandom@emory.edu          |
-| **Class Schedule**          | 01/22/18 - 05/08/18 Mondays  3:00 - 4:50 PM |
-| **Instructor Office Hours** | Fridays, 1:00-2:00 PM, GCR 366              |
-| **TA Office Hours**         | TBD                                         | 
-| **Prerequisites**           | [BIOS 501](https://www.sph.emory.edu/academics/courses/bios-courses/index.html) or permission of instructor        |
+|                             |                                                               | 
+| ----------------------------|---------------------------------------------------------------| 
+| **Course Title**            | Intro to R Programming                                        | 
+| **Location**                | Claudia Nance Rollins 4001                                    |  
+| **Instructor**              | Steve Pittard wsp@emory.edu                                   |
+| **TA**                      | Dane Van Domelen dvandom@emory.edu                            |
+| **Class Schedule**          | 01/22/18 - 05/08/18 Mondays  3:00 - 4:50 PM                   |
+| **Instructor Office Hours** | Fridays, 1:00-2:00 PM, GCR 366                                |
+| **TA Office Hours**         | TBD                                                           | 
+| **Prerequisites**           | [BIOS 501](http://bit.ly/2CTl9Z5) or permission of instructor |
 
-[I'm an inline-style link](https://www.google.com)
-
-## Logistics
-
-* Class hours and location: MW 1:00pm - 2:15pm, Claudia Nance Rollins 4001
-* Prerequisites: BIOS 501 or equivalent or permission of instructor
-
-## Office Hours
-
-* Steve Pittard, wsp@emory.edu Fridays 11:00am - 12pm Grace Crum Rollins 366
-* Dane Van Domelen (TA), dvandom@emory.edu 
 
 ## Textbook
 
-* [Algorithms (4th Edition)](http://algs4.cs.princeton.edu), Sedgewick and Wayne.
+There is no offical textbook for this course though the following books might be helpful. We will also discuss the availability of high quality open source documentation for R so it is recommended that you wait until after the first session before purchasing any books.
+
+* [R for Beginners)](https://cran.r-project.org/doc/contrib/Paradis-rdebuts_en.pdf), Paradis, E.
+* [A Beginner's Guide to R](http://www.amazon.com/Beginners-Guide-Use-Alain-Zuur/dp/0387938362), Zuur, Ieno, Meesters
+* [Applied Epidemiology Using R](https://tbrieder.org/epidata/course_reading/e_aragon.pdf), Aragon, Thomas
+
 
 ## Grading
 
