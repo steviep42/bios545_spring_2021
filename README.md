@@ -2,16 +2,26 @@
 
 ## Summary
 
-The instructor for this class is Steve Pittard. This class is designed to provide an introduction to R and R programming. Upon successful completion of this course, students will be able to:
+This class is designed to provide an introduction to R and R programming. Upon successful completion of this course, students will be able to:
 
-    Understand the concepts of the R programming language
-    Write and debug R functions
-    Create useful graphs
-    Reshape and aggregate data
-    Make adjustments to code to measure and improve performance
-    Create Reproducible R Code for distribution and collaboration 
+   * Understand the concepts of the R programming language
+   * Write and debug R functions
+   * Create useful graphs
+   * Reshape and aggregate data
+   * Make adjustments to code to measure and improve performance
+   * Create Reproducible R Code for distribution and collaboration 
 
 This class takes place in the Winter/Spring Semester of 2018. The format will be a mixture of lectures and labs. The schedule below represents the intended content although the instructor may elect to substitute in topics as deemed appropriate. 
+
+## Class Info
+
+
+| ------------- |:-------------:| 
+| col 3 is      | right-aligned | 
+| col 2 is      | centered      |   
+| zebra stripes | are neat      |  
+
+## Logistics
 
 * Class hours and location: MW 1:00pm - 2:15pm, Claudia Nance Rollins 4001
 * Prerequisites: BIOS 501 or equivalent or permission of instructor
