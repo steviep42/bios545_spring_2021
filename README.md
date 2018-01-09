@@ -15,17 +15,11 @@ This class takes place in the Winter/Spring Semester of 2018. The format will be
 
 # Class Info
 
-
-| | | |
-|-|-|-|
-| Normal Key| Value1 |
-|__BoldKey__| Value2 |
-
 |               |               | 
 | ------------- |:-------------:| 
-| Course        | right-aligned | 
-| col 2 is      | centered      |  
-| zebra stripes | are neat      | 
+| _Course Title_| Intro to R Programming | 
+| col 2 is      | centered               |  
+| zebra stripes | are neat               | 
 
 ## Logistics
 
