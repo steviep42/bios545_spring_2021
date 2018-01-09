@@ -13,7 +13,7 @@ This class is designed to provide an introduction to R and R programming. Upon s
 
 This class takes place in the Winter/Spring Semester of 2018. The format will be a mixture of lectures and labs. The schedule below represents the intended content although the instructor may elect to substitute in topics as deemed appropriate. 
 
-# Class Info
+## Class Info
 
 |                             |                                             | 
 | ----------------------------|---------------------------------------------| 
@@ -24,7 +24,9 @@ This class takes place in the Winter/Spring Semester of 2018. The format will be
 | **Class Schedule**          | 01/22/18 - 05/08/18 Mondays  3:00 - 4:50 PM |
 | **Instructor Office Hours** | Fridays, 1:00-2:00 PM, GCR 366              |
 | **TA Office Hours**         | TBD                                         | 
+| **Prerequisites**           | [BIOS 501](https://www.sph.emory.edu/academics/courses/bios-courses/index.html) or permission of instructor        |
 
+[I'm an inline-style link](https://www.google.com)
 
 ## Logistics
 
