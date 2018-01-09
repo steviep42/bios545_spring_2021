@@ -6,4 +6,4 @@ This class is designed to provide an introduction to R and R programming for Bio
 
 * [Syllabus](https://github.com/pittardsp/bios545r_spring_2018/wiki/Syllabus)
 
-Schedule
+* [Schedule](https://github.com/pittardsp/bios545r_spring_2018/wiki/Schedule)
