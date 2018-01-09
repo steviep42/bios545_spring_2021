@@ -13,13 +13,19 @@ This class is designed to provide an introduction to R and R programming. Upon s
 
 This class takes place in the Winter/Spring Semester of 2018. The format will be a mixture of lectures and labs. The schedule below represents the intended content although the instructor may elect to substitute in topics as deemed appropriate. 
 
-## Class Info
+# Class Info
 
 
-| Course Title  |Introdunction to R Programming | 
-| col 3 is      | right-aligned                 | 
-| col 2 is      | centered                      |   
-| zebra stripes | are neat                      |   
+| | | |
+|-|-|-|
+| Normal Key| Value1 |
+|__BoldKey__| Value2 |
+
+|               |               | 
+| ------------- |:-------------:| 
+| Course        | right-aligned | 
+| col 2 is      | centered      |  
+| zebra stripes | are neat      | 
 
 ## Logistics
 
