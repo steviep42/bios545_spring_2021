@@ -38,11 +38,10 @@ There is no offical textbook for this course though the following books might be
 
 ## Grading
 
-* Homework assignments: 40%.
-* Take-home quizzes: 10%.
-* Midterm exam: 20%.
-* Final exam: 30%.
-* Your work is governed by the [Emory Honor Code](http://catalog.college.emory.edu/academic/policy/honor_code.html) and the [Math/CS SPCA](http://mathcs.emory.edu/spca.php). Honor code violations on any submission will be referred to the [Emory Honor Council](http://college.emory.edu/home/academic/honor-council/).
+* Homework assignments: 80% (4 homeworks)
+* Final exam: 20% (In class, open notes but no email)
+
+* Your work is governed by the [Rollins School of Public Health Honor Code](https://www.sph.emory.edu/rollins-life/enrollment-services/honor-code/index.html). Honor code violations on any submission will be referred to the [Emory Honor Council](http://college.emory.edu/home/academic/honor-council/). While it is permissible to discuss assignments with other students on a conceptual basis, it is not permissible to develop code collaboratively. This means that all work that you turn in for grading will be your own and will not be the result of copying from other students, (current or former), or from Google search results. 
 
 ## Notes
 
