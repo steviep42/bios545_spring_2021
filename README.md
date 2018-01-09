@@ -15,11 +15,16 @@ This class takes place in the Winter/Spring Semester of 2018. The format will be
 
 # Class Info
 
-|               |               | 
-| ------------- |:-------------:| 
-| _Course Title_| Intro to R Programming | 
-| col 2 is      | centered               |  
-| zebra stripes | are neat               | 
+|                             |                                             | 
+| ----------------------------|:-------------------------------------------:| 
+| **Course Title**            | Intro to R Programming                      | 
+| **Location**                | Claudia Nance Rollins 4001                  |  
+| **Instructor**              | Steve Pittard wsp@emory.edu                 |
+| **TA**                      | Dane Van Domelen dvandom@emory.edu          |
+| **Class Schedule**          | 01/22/18 - 05/08/18 Mondays  3:00 - 4:50 PM |
+| **Instructor Office Hours** | Fridays, 1:00-2:00 PM, GCR 366              |
+| **TA Office Hours**         | TBD                                         | 
+
 
 ## Logistics
 
