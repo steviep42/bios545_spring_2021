@@ -15,7 +15,7 @@ This class takes place in the Winter/Spring Semester of 2018. The format will be
 
 ## Class Info
 
-| Tables        | Are           | 
+|               |               | 
 | ------------- |:-------------:| 
 | col 3 is      | right-aligned | 
 | col 2 is      | centered      |   
