@@ -2,13 +2,8 @@
 
 ## Summary
 
-This class is designed to provide an introduction to R and R programming. Upon successful completion of this course, students will be able to:
+This class is designed to provide an introduction to R and R programming for Biostatistics students from the Department of Biostatistics and Bioinformatics within the Rollins School of Public Health at Emory University. A working knowledge of R is essential to the success of students interested in a career involving statistics and/or bioinformatics. This course has been developed specifically with the needs of Biostsatistics students in mind. 
 
-   * Understand the concepts of the R programming language
-   * Write and debug R functions
-   * Create useful graphs
-   * Reshape and aggregate data
-   * Make adjustments to code to measure and improve performance
-   * Create Reproducible R Code for distribution and collaboration 
+* [Syllabus](Syllabus)
 
-This class takes place in the Winter/Spring Semester of 2018. The format will be a mixture of lectures and labs. The schedule below represents the intended content although the instructor may elect to substitute in topics as deemed appropriate. 
+Schedule
