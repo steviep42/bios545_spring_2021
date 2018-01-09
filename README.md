@@ -16,7 +16,7 @@ This class takes place in the Winter/Spring Semester of 2018. The format will be
 # Class Info
 
 |                             |                                             | 
-| ----------------------------|:-------------------------------------------:| 
+| ----------------------------|---------------------------------------------| 
 | **Course Title**            | Intro to R Programming                      | 
 | **Location**                | Claudia Nance Rollins 4001                  |  
 | **Instructor**              | Steve Pittard wsp@emory.edu                 |
