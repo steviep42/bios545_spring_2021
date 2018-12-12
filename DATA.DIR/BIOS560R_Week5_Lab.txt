@@ -1,0 +1,956 @@
+BIOS560R WEEK #5 LAB Graphics
+
+PRACTICE 1: LOOK AT THE BUILT IN GRAPHICS EXAMPLES. PROCEED THROUGH THE DEMOS SLOWLY 
+NOTING THAT FOR EACH EXAMPLE THAT IS DISPLAYED, R PRINTS OUT THE ASSOCIATED STATEMENTS 
+NECESSARY TO GENERATE THE GRAPH. THIS IS USEFUL.
+
+	demo(graphics)
+	
+	example(pch)
+
+ALSO RUN THE FOLLOWING CODE FROM THE LECTURE, WHICH PROVIDES EXAMPLES OF THE PRINT 
+CHARACTERS:
+
+	midx = 2
+	for (ii in 1:24) {
+		my.title = paste("PCH =",ii,sep=" ")
+		if (midx > 6) {
+		   midx = 2
+		} else {
+		   midx = midx + 1
+		}
+		plot(1:10, 1:10, pch=ii, cex=2, main=my.title)
+		text(midx,9,"R IS COOL", col = "red")
+		Sys.sleep(2)
+	}
+
+
+PRACTICE 2) INCREMENTALLY ASSEMBLE A PLOT USING SOME OF THE PRIMITIVES MENTIONED IN CLASS:
+
+	# INITIALIZE THE PLOT WINDOW AND RANGES
+	
+	plot(0:10, 0:10, type="n", xlab="X", ylab="Y", axes=FALSE)
+	
+	# Draw Grids
+	
+	abline(h=seq(0,10,2),lty=3,col="gray90")
+	
+	abline(v=seq(0,10,2),lty=3,col="gray90")
+	
+	# Put up some text in the plot region
+	
+	text(5,5, "Plot Stuff Here", col="red", cex=1.5)
+	
+	# Draw bounding boxes
+	
+	box("plot", col="red", lty = "dotted")
+	
+	box("inner", col="blue", lty = "dashed")
+	
+	# Let's put up some text in the margins
+	
+	mtext("South Margin",1,cex=1.2, line = 2, col="blue")
+	
+	mtext("West Margin",2,cex=1.2, line = 2, col="green")
+	
+	mtext("North Margin",3,cex=1.2, line = 3,col="orange")
+	
+	mtext("East Margin",4,cex=1.2,col="purple")
+	
+	title("An Example Plot")
+	
+
+2.1) LET'S BUILD A PLOT USING THE POINTS COMMAND. WITH REFERENCE TO THE MTCARS DATA SET 
+LET'S PLOT WT ON THE Y AXIS AND MPG ON THE X AXIS. WE ALSO WOULD LIKE TO PUT UP A 
+HORIZONTAL LINE THAT REPRESENTS THE AVERAGE FOR THE MPG. ANY POINTS THAT FALL TO THE 
+RIGHT OF THE AVERAGE WE WANT TO HAVE A COLOR IN BLUE. ANY THAT FALL BELOW SHOULD BE IN 
+RED. PROCEED SLOWLY THROUGH THIS EXAMPLE TO UNDERSTAND WHAT IS HAPPENING.
+
+	attach(mtcars)
+	
+	above.mean = mtcars[mpg  > mean(mpg),]
+	
+	below.mean = mtcars[mpg <= mean(mpg),]
+	  
+	plot(mtcars$mpg, mtcars$wt,type="n",
+		   main="Weight vs. MPG",
+		   ylab="Weight in lbs/1,000")
+	 
+	points(above.mean$mpg, above.mean$wt, 
+		   col="blue", 
+		   bg="blue",
+		   pch=21)
+	
+	points(below.mean$mpg, below.mean$wt,
+		   col="red",
+		   bg="red",
+		   pch=21)
+	
+	abline(v=mean(mpg),lty=2)
+
+
+2.2) IN THIS EXAMPLE WE WANT TO PLOT THE MTCARS DATASET. IN THIS CASE MPG ON THE Y AXIS 
+AND MPG ON THE X AXIS. 
+
+plot(mpg ~ wt, main="Milage vs. Car Weight",
+               xlab="Weight", 
+               ylab="Mileage", 
+               pch=18, col="blue", 
+               data = mtcars)
+
+2.3) LET'S ALSO PUT UP TEXT ANNOTATIONS FOR EACH PLOT. IN THIS CASE WE WILL USE THE 
+ROW.NAMES, WHICH CONTAIN THE NAMES OF THE CARS
+
+	text(mtcars$wt, mtcars$mpg, 
+		  row.names(mtcars),    # Get the row names
+		  cex=0.6,              # Scaling of the font size
+		  pos=4, 		    # 1=below, 2=left, 3=above, 4=right 
+		  col="red")
+
+
+
+
+2.4) IN THIS EXAMPLE WE WANT TO USE THE IDENTIFY() FUNCTION TO IDENTIFY POINTS BY 
+CLICKING ON THEM. THIS IS AN INTERACTIVE EXERCISE. ONCE YOU ENTER THE IDENTIFY() 
+COMMAND YOU SHOULD CLICK SOME POINTS. AFTER YOU ARE DONE WITH THE EXERCISE PRESS 
+THE ESC KEY.
+
+	plot(mtcars$wt, mtcars$mpg, 
+		  main="Milage vs. Car Weight", 
+		  xlab="Weight", 
+		  ylab="Mileage", 
+		  pch=18, col="blue")
+	
+	identify(mtcars$wt,mtcars$mpg)
+
+# Note that you could choose to use the row names as labels
+
+identify(mtcars$wt,mtcars$mpg,labels=row.names(mtcars))
+
+2.5) LET'S BUILD UP A PLOT WITH LINES FROM THE MTCARS DATA SET.
+
+	par(mfrow=c(1,1))
+	
+	ylim=c(0,50)
+	
+	xlim=c(0,32)
+	
+	plot(mtcars$mpg,type="l",xlim=xlim,ylim=ylim)
+	
+	lines(mtcars$drat,type="l",col="green")
+	
+	lines(mtcars$qsec,type="l",col="red")
+	
+	legend("topright",c("mpg","drat","qsec"),
+			col=c("black","green","red"),pch="--")
+	
+	title("MPG - DRAT - QSEC")
+
+# WE CAN DRAW FIGURES ON TOP OF AN EXISTING PLOT
+
+
+	plot(mpg ~ wt, data = mtcars, 
+				   xlab = "Weight / 1,000",
+				   main = "MPG vs. WT",
+				   type = "n")
+	
+	rect(1,0,6,15,col="gray96")
+	
+	rect(1,20,6,25,col="gray96")
+	
+	rect(1,30,6,35,col="gray96")
+	
+	grid()
+	
+	# HERE WE ILLUSTRATE MORE OF THE "PRIMITIVES"
+	
+	plot(mpg ~ wt, data = mtcars)
+	
+	text(1.5,18,paste("Mean MPG ",mean(mtcars$mpg),sep="="),pos=4)
+	
+	arrows(2,20.1,1.5,20.1,length=0.10)
+	
+	mean(mtcars$wt)
+	
+	arrows(3.22,15,3.22,10,length=0.10)
+	
+	text(1.5,18,paste("Mean MPG ",mean(mtcars$mpg),sep="="),pos=4)
+	
+	text(3,12,paste("Mean WT ",mean(mtcars$wt),sep="="),pos=2)
+	
+	# Pos = 1,2,3,4 for below, left, above, and right respectively
+	
+	# Next draw an interval 
+	
+	arrows(4,27,4,32,angle=90,col="blue")
+	
+	arrows(4,32, 4,27, angle=90, col="red")
+	
+
+
+# So we can set up the plot layout and then plot the points separately
+
+	points(mtcars$wt, mtcars$mpg, col="red")
+	
+	legend("topright", inset=0.05, "My Data", pch=1, col="red")
+	
+
+PRACTICE 3) USING THE BUILT-IN DATA FRAME CALLED IRIS, PLEASE PLOT SEPAL.LENGTH VS 
+SEPAL.WIDTH FOR THE ENTIRE DATA FRAME USING THE COLOR BLUE, A PRINT CHARACTER OF 20, 
+AND A TITLE OF "EXAMPLE PLOT". FEEL FREE TO EXPERIMENT WITH DIFFERENT PRINT CHARACTERS 
+AND COLORS.
+
+	plot(Sepal.Length ~ Sepal.Width, iris, 
+		 col="blue", pch=20, main = "Example Plot")
+
+3.1) PLOT THIS AGAIN -  THOUGH NOW INCLUDE ARGUMENTS TO LABEL THE X AND Y AXIS 
+ACCORDINGLY. ALSO ADD A GRID TO THE PLOT:
+
+	plot(Sepal.Length ~ Sepal.Width, iris, 
+		 col="blue", pch=20, main = "Example Plot",
+		 xlab = "Sepal Length", ylab = "Sepal Width")
+	
+	grid()
+
+
+3.2) PLACE A LEGEND IN THE UPPER RIGHT OF THE PLOT. NOTE THAT YOU SHOULD EXPERIMENT 
+WITH THIS EXAMPLE UNTIL YOU UNDERSTAND HOW TO POSITION THE LEGEND. LOOK AT THE HELP 
+SECTION ON LEGEND TO SEE WHAT YOUR OPTIONS ARE (E.G. LEFT, TOPRIGHT, RIGHT, TOPRIGHT, 
+ETC). 
+
+	legend("topright", inset=0.05, "My Data", 
+			pch=21, col="blue")
+
+
+
+NOTE THAT THERE ARE 3 DISTINCT SPECIES IN THIS DATA FRAME. 
+
+	sapply(iris, function(x) length(unique(x)))
+	
+	Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
+			  35           23           43           22            3
+
+3.3) WE CAN HAVE A SINGLE PLOT FOR PETAL.WIDTH VS PETAL.LENGTH YET HAVE DIFFERENT PLOT 
+CHARACTERS AND COLORS FOR EACH OF THE 3 SPECIES.
+
+	plot(Petal.Width ~ Petal.Length, iris, 
+		 pch=21:23, col=1:3)
+
+
+NOTE THAT WE HAVE JUST SELECTED 3 DIFFERENT COLORS AND PRINT CHARACTERS MORE OR LESS 
+ARBITRARILY. WE COULD HAVE SPECIFIED PCH=3:5 OR COL=2:4. YOU SHOULD EXPERIMENT WITH 
+THIS TO SEE WHAT THE RESULTING EFFECT IS.
+
+3.4) LET'S PUT UP A LEGEND THAT LET'S US UNDERSTAND WHAT CHARACTER AND COLOR CORRESPONDS 
+TO WHICH SPECIES. WE HAVE TO BE CONSISTENT IN OUR SELECTION SO THE LEGEND WILL MATCH WHAT 
+IS IN THE PLOT. 
+
+	legend("topleft",c("setosa","versicolor","virginica"),
+			pch=21:23, col=1:3)
+	
+	Let's also put a title up.
+	
+	title("Three Species of Iris")
+
+
+3.5) NOW WE WISH TO CREATE THREE SEPARATE PLOTS OF THE SEPAL.LENGTH VS SEPAL.WIDTH, 
+ONE FOR EACH OF THE THREE SPECIES. FIRST, EXTRACT THE DATA ON A PER SPECIES BASIS – 
+USING THE SPLIT COMMAND FOR EXAMPLE:
+
+	my.splits = split(iris, iris$Species)
+	
+	names(my.splits)
+	[1] "setosa"     "versicolor" "virginica"
+
+
+3.6) NEXT LET'S CREATE A PLOT LAYOUT TO ACCOMMODATE THE THREE SEPARATE PLOTS IN ONE ROW.
+
+	par(mfrow=c(1,3))
+	
+	plot(Petal.Width ~ Petal.Length, 
+		 my.splits[[1]],main = "Setosa", col="blue",pch=21)
+	
+	plot(Petal.Width ~ Petal.Length, 
+		 my.splits[[2]], 
+		 main = "Versicolor",   col="red",pch=21)
+	
+	plot(Petal.Width ~ Petal.Length, 
+		 my.splits[[3]],
+		 main = "Virginica", col="green",pch = 21)
+
+3.6) LET'S REPEAT THIS BUT USING SOME CONSOLIDATION STRATEGIES. TAKE YOUR TIME WITH 
+THIS EXAMPLE. DON'T LEAVE THIS EXAMPLE UNTIL YOU UNDERSTAND IT. ASK QUESTIONS IF YOU 
+NEED TO.
+
+	
+	cols=c("red","blue","green")
+	
+	par(mfrow=c(1,3))
+	
+	for (ii in 1:length(my.splits)) {
+		 plot(Petal.Width ~ Petal.Length, 
+		 data = my.splits[[ii]], 
+		 main=names(my.splits)[ii], col=cols[ii])
+	}
+
+
+3.7) LET'S SEE HOW WE COULD PUT A REGRESSION LINE OVER AN X/Y PLOT OF SOME DATA. THIS 
+IS VERY SIMPLE TO DO.
+
+	plot(my.mtcars$wt,my.mtcars$mpg, 
+		 main="X/Y Plot of MPG vs Wt")
+	
+	my.lm = lm(mpg ~ wt,mtcars)
+	
+	abline(my.lm)
+
+3.8) WE CAN ALSO PLOT CONFIDENCE INTERVALS FOR A REGRESSION MODEL. THIS IS A LITTLE 
+MORE INVOLVED BUT CAN BE USEFUL WHEN EVALUATION THE QUALITY OF THE MODEL.
+
+	my.mtcars = mtcars[order(mtcars$wt),]
+	
+	plot(my.mtcars$wt,my.mtcars$mpg)
+	
+	model = lm(my.mtcars$mpg ~ my.mtcars$wt)
+	
+	yv = predict(model,list(wt=my.mtcars$wt))
+	
+	lines(my.mtcars$wt,yv,col="green")
+	
+	text(4,30,"Linear Regression Line")
+	
+	# Next we'll put up the confidence intevals
+	
+	hold = predict(model,interval="confidence")
+	
+	lines(my.mtcars$wt,hold[,2],lty=2,col="red")
+	
+	lines(my.mtcars$wt,hold[,3],lty=2,col="red")
+
+
+4.0) WE'LL EXPERIMENT WITH CONDITIONED PLOTS. THIS ALLOWS US TO CONVENIENTLY PLOT X/Y 
+RELATIONSHIPS PER CATEGORY (GENERALLY A FACTOR). AS AN EXAMPLE CHECK THIS OUT.
+
+	Create a factor out of the transmission type in the mtcars dataset.
+	
+	my.factors = factor(mtcars$am,labels=c("auto","manual"))
+
+4.1) CALL THE COPLOT COMMAND TO PRODUCE AN X/Y PLOT OF MPG VS WT FOR EACH TRANSMISSION 
+TYPE:
+
+	coplot(mpg~wt | my.factors,data=mtcars,col="red",
+		   pch=16,main="MPG vs Weight")
+
+4.2) NOTE THAT YOU CAN PLOT CONDITIONALLY ON MORE THAN A SINGLE FACTOR:
+
+	coplot(mpg~wt|factor(cyl) * my.factors,data=mtcars)
+
+4.3) MANY GRAPHICS FUNCTIONS SUPPORT THE CONCEPT OF A "PANEL" FUNCTION. THIS IS WHERE 
+YOU CAN CUSTOMIZE YOUR PLOT BY WRITING YOUR OWN FUNCTION. AS AN EXAMPLE, WE'LL CREATE 
+A REGRESSION LINE FOR EACH PANEL
+
+	my.coplot <- function(x,y,...) {
+	   points(x,y,col="blue",pch=16)
+	   abline(lm(y~x),col="red",lty=3)
+	}
+	
+	
+	coplot(mpg~wt|my.factors, data=mtcars, col="red",
+			pch=16,main="MPG vs Weight",
+			panel=my.coplot)
+
+
+PRACTICE 5.0) NEXT WE'LL PUT UP SOME SCATTERPLOTS INVOLVING MULTIPLE VARIABLES. THIS IS 
+A QUICK WAY TO GET AN IDEA OF HOW CORRELATED (OR NOT) MULTIPLE VARIABLES FROM A DATA SET 
+MIGHT BE. WE'LL STICK WITH THE MTCARS DATA SET.
+
+pairs(mtcars)    # This results in a very busy plot
+
+
+5.1) SO LET'S FOCUS ON JUST SOME OF THE MORE KEY VARIABLES FROM THIS DATA FRAME. IN THIS 
+CASE: MPG, DISP, HP, DRAT, AND WT
+
+	pairs(mtcars[,c(1,3:6)], cex = 1.5, pch=21, 
+		  bg="light blue",main="Pairs plot of 5 variables")
+
+5.2) LET'S LOOK DEEPER INTO THE PAIRS COMMAND. WE'LL SEE THAT WE CAN CUSTOMIZE THE UPPER 
+AND LOWER DIAGONALS AS WELL AS THE MAIN DIAGONAL ITSELF. WE REQUEST THE PANEL.SMOOTH 
+FUNCTION, WHICH DRAWS A SMOOTHING LINE. FROM THIS GRAPH WHAT VARIABLES APPEAR TO BE 
+CORRELATED ?
+
+	pairs(mtcars[,c(1,3:6)],cex = 1.5,
+			pch = 21, bg = "light blue",
+			main = "Pairs plot of 5 variables",
+			panel = panel.smooth)
+
+
+5.3) WE'LL DO SOME MORE CUSTOMIZATION. THIS MIGHT BE A LITTLE ADVANCED AT THIS POINT BUT 
+TRY TO UNDERSTAND WHAT THE PANEL.COR FUNCTION DOES. IT'S PURPOSE IS TO PUT THE CORRELATION 
+COEFFICIENTS BETWEEN THE VARIABLES INTO THE UPPER DIAGONAL.
+
+	panel.cor <- function(x, y, ...) {
+	  usr <- par("usr"); on.exit(par(usr))
+	  par(usr = c(0, 1, 0, 1))
+	  r <- round(abs(cor(x, y)),2)
+	  txt <- as.character(r)
+	  text(0.5, 0.5, txt, cex = 2.0,col="red")
+	}
+	
+	pairs(mtcars[,c(1,3:6)], cex = 1.5,
+			 pch=21,
+			 bg="light blue",
+			 main="Pairs plot of 5 variables",
+			 upper.panel = panel.cor,
+			 lower.panel = panel.smooth)
+	
+	
+
+
+6.0) LET'S CHECK OUT SOME OF THE COLORS BUILT IN TO R.
+
+	colors()[1:5]                  # Gets the first 5 elements
+	grep("blue|yellow",colors())   # Gets all colors relating to blue or yellow
+	
+	
+	Enter this function and experiment with various colors to build a palette:
+	
+	col.wheel <- function(str, cex=0.75) {
+		cols <- colors()[grep(str, colors())]
+		pie(rep(1, length(cols)), labels=cols, col=cols, cex=cex)
+		cols
+	} 
+	
+	col.wheel("purple")
+	col.wheel("red")
+	col.wheel("blue")
+
+Note that there are some pre-defined palettes:
+
+	rainbow, heat.colors, terrain.colors, topo.colors, cm.colors
+
+6.1) TO CHECK THESE OUT DO THE FOLLOWING:
+
+	my.func <- function(colfunc) {
+	 FUN = match.fun(colfunc)
+	 colors = FUN(3)
+	 main = paste("Color Palette",colfunc,sep=" ")
+	 my.means = tapply(mtcars$mpg, mtcars$cyl, mean)
+	 barplot(main = main, my.means, col = colors, beside=T)
+	}
+	
+	par(mfrow=c(3,2))
+	for (var in c("rainbow","heat.colors","terrain.colors","topo.colors","cm.colors")) {
+	  my.func(var)
+	}
+
+6.2) LET'S WORK A LITTLE BIT WITH THE INDOMETH DATA SET. THIS MIGHT SHOW UP IN THE
+HOMEWORK SO PAY ATTENTION TO WHAT WE ARE DOING HERE. THINK ABOUT WAYS TO GENERALIZE
+THIS LOOP. FOR EXAMPLE WHAT IF WE WANTED TO HAVE IT PLOT DIFFERENT LINE TYPES, OR SOME
+ARBITRARY NUMBER OF SUBJECTS, OR A DIFFERENT PLOT LAYOUT ? A FUNCTION MIGHT BE IN ORDER.
+
+
+	par(mfrow=c(3,2))   # Get 3 rows by 2 columns
+	col=rainbow(6)  	# Get 6 different colors for each Subject ID
+	
+	for (ii in 1:6) {
+	  
+	  x.label = paste("Subject",ii,"Time (hours)",sep="_")
+	  temp = subset(Indometh,Subject==ii)
+	  
+	  plot(temp$conc ~ temp$time,
+		   main="Pharmacokinetics of Indomethicin",
+		   xlab=x.label,
+		   ylab="Conc (mcg/ml)",
+		   col=col[ii])
+	}
+
+
+7.0 BARCHARTS - TABULAR / COUNT DATA
+
+	url = "http://www.cyclismo.org/tutorial/R/smoker.csv"
+	
+	smokers = read.table(url,header=T,sep=",")
+	
+	head(smokers)
+	
+	( my.table = table(smokers$Smoke,smokers$SES) )
+	
+	par(mfrow=c(1,1))
+	barplot(my.table, legend = T, beside = T,
+			col=heat.colors(3),main='Smoking Status by SES')
+			
+	barplot(my.table,legend=T,beside=F,     # Beside = F
+			  col=heat.colors(3),main='Smoking Status by SES')
+	
+	barplot(my.table,legend=T, horiz=T,
+			col=heat.colors(3),main='Smoking Status by SES')
+        
+8.0 DOTPLOTS - 
+
+	par(mfrow=c(1,1))
+	
+	dotchart(mtcars$mpg,labels=row.names(mtcars),
+		cex=.5,
+		main="Gas Milage for Car Models", 
+		xlab="Miles Per Gallon")
+		
+	
+	dotchart(mtcars$mpg, labels = row.names(mtcars),
+			   cex=.5, main="Gas Milage for Car Models", 
+			   groups=factor(mtcars$cyl))
+
+
+# Here we use the "groups" arguments to plot the cars by cylinder type AND order the 
+# plot values. We'll also want each group to have different colors:
+
+	par(mfrow=c(1,1))
+	x = mtcars[order(mtcars$mpg),] # sort by mpg
+	
+	x$cyl <- factor(x$cyl) # it must be a factor
+	
+	x$color[x$cyl==4] = "red"
+	
+	x$color[x$cyl==6] = "blue"
+	
+	x$color[x$cyl==8] = "darkgreen"
+	
+	mymeans = tapply(x$mpg,x$cyl,mean)
+	
+	dotchart(x$mpg, labels=row.names(x),cex=.8,
+		 groups= x$cyl,
+		 main="Gas Milage for Car Models\ngrouped by cylinder",
+		 xlab="Miles Per Gallon", gcolor="black", 
+		 color=x$color, gdata=mymeans, gpch=24)
+	
+
+9.0) BARPLOTS ARE ALSO USEFUL FOR SHOWING STATISTICAL SUMMARIES OF A CONTINUOUS 
+VARIABLE(S) ACROSS A NUMBER OF GROUPS. AS AN EXAMPLE, WITH THE MTCARS DATA SET, 
+LET'S GET THE MEAN OF MPG ACROSS ALL CYLINDER TYPES. WE GET:
+
+
+	my.table = ( tapply(mtcars$mpg,mtcars$cyl,mean) )
+	
+	barplot(my.table, col=terrain.colors(3),
+			 legend=TRUE, main="MPG by Cylinders")
+
+
+9.1) LET'S PUT UP SOME ERROR BARS
+
+	mpg.M = tapply(mtcars$mpg, mtcars$cyl, mean)
+	mpg.SD = tapply(mtcars$mpg, mtcars$cyl, sd)
+	
+	MPG = cbind(mpg.M, mpg.SD)
+	
+	bp = barplot(mpg.M, xlab = "MPG", col = rainbow(3), 
+				 ylim=c(0,max(mtcars$mpg+10)))
+	
+	arrows(bp, mpg.M, bp, mpg.M + mpg.SD, lwd=1.5, angle=90, length=0.1)
+	
+	
+	arrows(bp, mpg.M, bp, mpg.M - mpg.SD, lwd=1.5, angle=90, length=0.1)
+
+
+9.2) IN THE PREVIOUS EXAMPLE WE PICKED THREE DIFFERENT COLORS THOUGH SOMETIMES 
+IT MIGHT BE USEFUL TO PICK "SHADES" THAT PROPORTIONATELY REFLECT THE MEAN. 
+
+	library(RColorBrewer)
+	
+	my.cols = colorRampPalette(brewer.pal(9,"Reds"))(10)
+	
+	barplot(tapply(mtcars$mpg, mtcars$cyl, mean), col = my.cols,
+			 main = "BarCharts with Shading")
+	
+	9.3) WE CAN DO THE SAME THING WITH THE COLOR GRAY (or GREY IF YOU PREFER)
+	
+	my.cols=gray(10:0/10)  # This gives us a continuum or graduated scale of grays
+	
+	barplot(tapply(mtcars$mpg, mtcars$cyl, mean), col = my.cols, 
+			main = "BarCharts with Shading")
+			
+	10.0) BOXPLOTS (FOR CONTINUOUS DATA)
+	
+	url ="http://www.bimcore.emory.edu/BIOS560R/DATA.DIR/Perch.txt"
+	
+	perch = read.table(url, header = T, sep=" ")
+	
+	head(perch)
+	
+	boxplot(perch$Weight,horizontal=TRUE,xlab="Mass (g)")
+	
+	my.cols = c("red","blue","purple","green","black")
+	
+	my5 = fivenum(perch$Weight)
+
+	for (ii in 1:length(my5)) {
+	  text(my5[ii],1.35,my5[ii],cex=0.8,col=my.cols[ii])
+	  text(my5[ii],0.55,mylabs[ii],cex=0.8,col=my.cols[ii])
+	}
+
+10.1) LET'S COMPARE THE BOXPLOT TO A HISTOGRAM
+
+	par(mfrow=c(1,2))
+	
+	boxplot(perch$Weight,horizontal=T, main="BoxPlot of Perch",
+			xlab="Mass in Grams")
+	
+	hist(perch$Weight,breaks="scott" ,main="Histogram of Perch",
+			xlab="Mass in Grams")
+
+10.2)  LET's LOOK AT A BOXPLOT BY CATEGORY (IN THIS CASE TRANSMISSION)
+
+	par(mfrow=c(1,1))
+	 
+	transmissions = factor(mtcars$am, labels=c("Auto","Manual"))
+	 
+	plot(transmissions,mtcars$mpg, 
+			main="MPG by Transmission Type", col=c("blue","green"))
+         
+10.3) WE CAN ROTATE THE ORIENTATION OF THE PLOT
+
+	cylinders = factor(mtcars$cyl)
+	
+	plot(cylinders,mtcars$mpg,
+		main="MPG by Cylinders",col=rainbow(3),
+		horizontal=TRUE,names=c("Four","Six","Eight"))    
+		
+
+10.4) WE CAN PLOT MPG BY A COMBINATION OF GROUPING VARIABLES. IN THIS CASE
+NUMBER OF CYLINDERS AND TRANSMISSION TYPE
+
+
+	mtcars$am = factor(mtcars$am,labels=c("Auto","Manual"))
+	
+	colors = (rep(rainbow(3),2))
+	
+	boxplot(mpg~cyl+am,mtcars,
+			main="MPG per Transmission Type",
+			col=colors)          
+        
+        
+10.5) WE CAN ALSO GET BACK USEFUL INFORMATION FROM THE BOXPLOT. CONSIDER THE BENTHIC DATA.
+THIS DATA MEASURES THE CONCENTRATION / PRESENCE OF BENTHIC MICROALGAE ON A NUMBER OF 
+BEACHES. THERE ARE 5 SAMPLES FROM EACH BEACH.
+
+
+	url = "http://www.bimcore.emory.edu/BIOS560R/DATA.DIR/RIKZ2.txt"
+	
+	benthic = read.table(url,header=T)
+	
+	bp = boxplot(Richness ~ Beach, data=benthic, col = "grey", xlab = "Beach",
+				 ylab = "Richness")
+	
+	
+	benthic.n = tapply(benthic$Richness, benthic$Beach, length)
+	
+	benthic.n
+	1 2 3 4 5 6 7 8 9 
+	5 5 5 5 5 5 5 5 5 
+	
+	bp    # Check what you get back ! ALOT !
+
+WE CAN FIND THE CENTER OF THE BOX BY MAKING REFERENCE TO THE VALUES PROVIDED BY
+$stats WE CAN DO SOME INTERPOLATION AND LABEL THE BOXES WITH THE NUMBER OF OBSERVATIONS
+PER BOX (BEACH).
+
+	midp = bp$stats[2, ] + (bp$stats[4, ] - bp$stats[2, ]) / 2
+	
+	text(1:9, midp, benthic.n, col ="white", font=2)
+
+
+11.0) HISTOGRAMS. THESE ARE FOR SUMMARIZING CONTINUOUS DATA
+
+
+	hist(rnorm(1000),col="aquamarine")
+	
+	hist(rnorm(1000),col="aquamarine",breaks=100)
+
+
+11.1) THERE IS INFORMATION IN THE HISTOGRAM OBJECT:
+
+	my.hist = hist(rnorm(1000),col="aquamarine")
+	
+	ls(my.hist)
+	
+	my.hist$mids       # The mid point of each bin
+	
+	my.hist$breaks     # Where the breaks are located in the graph
+	 
+	my.hist$counts     # The number of observations in each bin
+ 
+ 
+# Plot the counts figure over each bin. Here we use "mids" as the X 
+# coordinate and "counts" as the Y coordinate. And, we use counts
+# as the label. The text command doesn't care what it is plotting - just
+# make sure you give it a valid X/Y and a label.
+
+	text(my.hist$mids,my.hist$counts,my.hist$counts, pos=3,cex=0.8)
+
+
+11.2) IN THIS EXAMPLE WE'LL USE THE INTERNAL DATASET CALLED USARRESTS. THE VARIABLE 
+URBANPOP REPRESENTS THE PERCENT OF PEOPLE LIVING IN THE URBAN AREAS OF A GIVEN STATE 
+(E.G. ALASKA, ALABAMA,...) WE'LL ALSO PLOT A DENSITY OVER THE HISTOGRAM.
+
+
+	hist(USArrests$UrbanPop,freq=F,breaks=20,
+		  col="lightblue",border="red",
+		  main="Percent of Population Residing in Urban Areas")
+	
+	rug(USArrests$UrbanPop)   # Puts a "rug" of the observations at the bottom
+	
+	grid()
+
+# Let's overlay the histogram.
+
+	res = 5
+
+# We create a sequence starting from the min value of UrbanPop to the Max plus some
+# extra so we can get full coverage.
+
+	my.seq = seq(min(USArrests$UrbanPop)-res,
+			 max(USArrests$UrbanPop)+2*res,res)
+
+# Here we plot a theoretical density
+ 
+	lines(my.seq, dnorm(my.seq,mean(USArrests$UrbanPop),
+				  sd(USArrests$UrbanPop)),col="blue",lty=1,lwd=1.8)
+
+# Here we plot a density of actual values of the UrbanPop variable.
+
+	lines(density(USArrests$UrbanPop),lty=2,lwd=1.8,col="black")
+
+11.3) # DRAW 2 HISTOGRAMS FOR PURPOSES OF COMPARISON
+
+	par(mfrow=c(1,2))  # One row and 2 columns
+	
+	eight.cyl = mtcars[mtcars$cyl == 8,]
+	
+	four.cyl  = mtcars[mtcars$cyl == 4,]
+	
+	hist(four.cyl$mpg,breaks=seq(0,36,4),
+		 ylim=c(0,8),
+		 main="Four Cylinders",col="blue")
+	
+	hist(eight.cyl$mpg,breaks=seq(0,36,4),
+		 ylim=c(0,8),main="Eight Cylinders",
+		 col="yellow")
+		 
+# OR YOU CAN OVERLAY THE HISTOGRAMS IN ONE PASS
+
+	par(mfrow=c(1,1))
+	
+	hist(four.cyl$mpg,breaks=seq(0,36,4),col="blue",ylim=c(0,8))
+	
+	hist(eight.cyl$mpg,breaks=seq(0,36,4),col="yellow",add=T)
+
+
+12) LATTICE GRAPHICS
+
+# The typical Basic form when calling a lattice function looks like: 
+
+	xyplot(wt ~ mpg, data = mtcars)
+
+# And the general arrangement of a basic formula in a lattice function is like:
+
+# vertical.axis.variable ~ horizontal.axis.variable
+
+# Note that the tilde operator (i.e., ~) must be used in a lattice function call, even if 
+# the graph only uses a single variable.
+
+	histogram(~wt, data=mtcars)
+
+# Here we plot MPG vs weight and request unique colors and font sizes for both
+
+	xyplot(mpg ~ wt, groups = factor(cyl), cex=3:1, auto.key=T)
+
+* So check out this formula. "wt" is the y variable and "mpg" is the x variable. 
+
+	xyplot(mpg ~ wt | factor(cyl), data = mtcars, pch=16, 
+		   main = "MPG vs. wt by Cylinder Group", layout=c(1,3))
+
+* "cylinder" is a conditioning variable (preceeded by the | character). The conditioning 
+* variable divides the plot into separate panels
+
+
+	xyplot(mpg ~ wt | factor(cyl), data = mtcars, pch=16, 
+		   main = "MPG vs. wt by Cylinder Group", layout=c(1,3))
+		   
+* In this next case we have a grouping variable, which in this example is the variable am. 
+* The grouping variable segregates data into subgroups within each panel.
+
+	xyplot(mpg ~ wt | factor(cyl), data=mtcars, 
+		   pch=16,layout=c(3,1),
+		   groups = factor(am,labels=c("Auto","Manual")),
+		   auto.key = TRUE)
+		   
+	
+	xyplot(mpg ~ wt | factor(cyl), data=mtcars, 
+					groups = factor(cyl), pch=21,
+					type = c("p","g"),
+					layout = c(1,3),
+					auto.key = list( columns = 3))
+					
+	xyplot(mpg ~ factor(rownames(mtcars)),
+		   mtcars, xlab = "Car Names", ylab = "MPG",
+		   scales = list(cex = 0.7,x = list(rot = 60)),type=c("p","g"))
+		   
+	xyplot(mpg + drat + qsec ~ 1:nrow(mtcars), 
+		   data= mtcars, type="l",auto.key=T, 
+		   main = "MPG - DRAT - QSEC")
+    
+13) y~x|A*B MEANS DISPLAY THE RELATIONSHIP BETWEEN NUMERIC VARIABLES Y AND X SEPARATELY 
+FOR EVERY COMBINATION OF FACTOR A AND B. 
+
+	xyplot(mpg ~ wt | factor(cyl) *   factor(am,labels=c("Automatic","Manual")),data = mtcars)
+	
+	# - OR -
+	
+	mtcars = transform(mtcars, am =factor(am,
+					  labels=c("automatic","manual")), 
+					  cyl = factor(cyl))
+	
+	xyplot(mpg ~ wt | cyl * am, data = mtcars)
+	
+	xyplot(mpg ~ wt | factor(cyl) * factor(am,
+		   labels=c("Automatic","Manual")), groups = factor(gear),
+		   auto.key = list(space="right"), data = mtcars)
+       
+14) LATTICE FUNCTIONS HAVE AN ASSOCIATED PANEL FUNCTION THAT CAN BE USED FOR CUSTOMIZATION
+
+	xyplot(y ~ x, data=dataset, col="black") 
+	
+	# will "silently" pass the "col='black' argument to panel.xyplot. 
+	# Its basically the equivalent of:
+	
+	xyplot(y ~ x, data = dataset, 
+	   panel = function (x, y) { 
+		   panel.xyplot(x, y, col = "black") }
+	   ) 
+
+# HERE WE PLOT A BI-COLOR PLOT USING THE PANEL FUNCTIONS
+
+	my.mean = ifelse(mtcars$mpg > mean(mtcars$mpg),"B","R")
+	
+	xyplot(wt ~ mpg, mtcars, groups = my.mean, col=c("blue","red"),
+		panel = function(...) {
+		   panel.abline(v=mean(mtcars$mpg), lty="dashed")
+		   panel.xyplot(...) 
+			 }
+)
+
+# THESE TWO COMMANDS ARE BASICALLY THE SAME
+
+
+	xyplot(mpg~wt, data=mtcars, groups=factor(cyl), 
+		   cex=1.5, pch=21, type=c("p","g"), auto.key=TRUE)
+	
+	
+	xyplot(mpg~wt, data=mtcars, groups=factor(cyl),
+		auto.key=TRUE,
+		panel = function(x,y,...) {
+		  panel.xyplot(x,y, cex=1.5, pch=21,...)
+		  panel.grid()
+		}
+	)
+	
+	xyplot(mpg~wt, data=mtcars, groups=factor(cyl), 
+		   cex=1.5, pch=21, type=c("p","g"), 
+		   auto.key=list(text=c("Four","Six","Eight"),
+		   background="white",corner=c(1,1),x = .9, y = .9,border=T))
+		   
+	
+	# LET'S HIGHLIGHT THE AREA CONTAINING THE HIGHEST MPGS
+	
+	xyplot(mpg~wt, data=mtcars, groups=factor(cyl), 
+		   cex=1.5, pch=21, type=c("p","g"), 
+		   auto.key=list(text=c("Four","Six","Eight"),
+		   background="white",corner=c(1,1),x = .9, y = .9,border=T),
+		   panel = function(x,y,...) {
+			  lrect(1,30,2,35,col="light gray")
+			  panel.xyplot(x,y,...)
+		   })
+
+15) THE LATTICE EQUIVALENT TO THE PAIRS FUNCTION IS SPLOM
+
+	splom(~mtcars[,c(1,3:6)], data=mtcars, main="ScatterPlot",
+		  varname.cex=.8,axis.text.cex=0.4)
+		  
+	splom(~mtcars[c(1,3:6)],groups = am, mtcars, 
+		   auto.key = TRUE,axis.text.cex=0.5)
+	
+	splom(~mtcars[c(1:4)] |am,groups=am,mtcars,auto.key=TRUE,pscales=0)
+
+# WE CAN DO MOST OF OUR ANNOTATION WITHIN THE FUNCTION CALL ITSELF
+
+	splom(~data.frame(mpg, disp, hp, drat, wt, qsec),
+		   data = mtcars, groups = cyl, pscales = 0, 
+		   varnames = c("Miles\nper\ngallon", "Displacement\n(cu. in.)",
+						"Gross\nhorsepower", "Rear\naxle\nratio", 
+						"Weight", "1/4 mile\ntime"),
+		   auto.key = list(columns = 3, title = "Number of Cylinders"),
+		   varname.cex=0.7)      
+		   
+	
+	splom(~iris[1:4], groups = Species, data = iris,auto.key=T)
+
+
+16) BARCHARTS ALLOW FOR SIMILAR CAPABILITIES
+
+	smokers = read.table("http://www.cyclismo.org/tutorial/R/smoker.csv",header=T,sep=",")
+	
+	head(smokers)
+	
+	( my.table = table(smokers$Smoke,smokers$SES) )
+			 
+	barchart(my.table,auto.key=list(space="right"),stack=F,horizontal=F)
+
+# WE CAN HANDLE COMPLICATED TABLES
+
+	my.table = xtabs(~am + cyl + gear,my.mtcars)
+	
+	barchart(my.table,auto.key=T,layout=c(1,3))
+	
+	
+	my.table = table(factor(mtcars$am,labels=c("Auto","Manual")),
+			   mtcars$cyl)
+	
+	barchart(prop.table(my.table,margin=1),xlab="Proportion",
+			 auto.key = T, main = "Cylinders vs. Transmission")
+	 
+
+17) HISTOGRAMS
+
+# For these exercises you might have to install the mlmRev package:
+
+	install.packages("mlmRev")
+	
+	histogram(~ gcsescore,data=Chem97,
+				main="Histogram of GCSES score")
+				
+	histogram(~ gcsescore | factor(score), data = Chem97)
+
+# We Demonstrate here how we can overlay the histogram with a density plot using
+# the panel functions
+
+				
+	histogram(~ gcsescore | factor(score), data = Chem97,
+		 xlab = "Height (inches)", type = "density",
+		 panel = function(x, ...) {
+			  panel.histogram(x, ...)
+			  panel.mathdensity(dmath = dnorm, col = "black", 
+								args = list(mean=mean(x),sd=sd(x)))
+		 })
+
+
+18) DENSITY PLOTS -IT MIGHT ALSO BE INTERESTING TO LOOK AT THESE DENSITIES AS GROUPED BY 
+GENDER. LATTICE MAKES THIS TASK EASIER THAN IT WOULD BE USING BASE GRAPHICS.
+
+	densityplot(~ gcsescore | factor(score), 
+				   data = Chem97, plot.points = FALSE,
+				   main = "Densities by Score")
+	
+	
+	densityplot(~ gcsescore | factor(score), 
+				 Chem97, groups = gender, 
+				 plot.points = FALSE, 
+				 auto.key = TRUE,        # Gives a legend
+				 main = "Densities by Score grouped by Gender") 

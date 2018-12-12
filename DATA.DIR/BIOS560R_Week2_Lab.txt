@@ -1,0 +1,1035 @@
+BIOS560R WEEK #2 LAB Variables,Vectors, Matrices, Factors
+
+WORKING WITH VARIABLES
+
+PRACTICE 1.0) AS WE LEARNED THERE ARE A NUMBER OF VARIABLE TYPES IN R WITH THE MOST 
+FOUNDATIONAL BEING NUMERIC, CHARACTER, FACTOR, DATES, AND LOGICAL. LET'S CHECK SOME OF 
+THESE OUT TO MAKE SURE YOU KNOW WHAT YOU ARE DOING WITH THEM. 
+
+CLASSIFY THE FOLLOWING ATTRIBUTES AS BINARY, DISCRETE, OR CONTINUOUS. ALSO CLASSIFY THEM 
+AS QUALITATIVE (NOMINAL OR ORDINAL) OR QUANTITATIVE. SOME CASES MAY HAVE MORE THAN ONE 
+INTERPRETATION, SO BRIEFLY INDICATE YOUR REASONING IF YOU THINK THERE MAY BE SOME 
+AMBIGUITY.  
+
+EXAMPLE: AGE IN YEARS. ANSWER: DISCRETE, QUANTITATIVE, RATIO 
+
+1.	TIME IN TERMS OF AM OR PM. 
+2.	BRIGHTNESS AS MEASURED BY A LIGHT METER. 
+3.	BRIGHTNESS AS MEASURED BY PEOPLE’S JUDGMENTS. 
+4.	ANGLES AS MEASURED IN DEGREES BETWEEN 0◦ AND 360◦
+
+
+ANSWERS: 1) BINARY, QUALITATIVE, ORDINAL, 2) CONTINUOUS, QUANTITATIVE
+3) DISCRETE, QUALITATIVE, ORDINAL, 4) CONTINUOUS, QUANTITATIVE 
+
+1.2) APPLY THE "CLASS" AND "TYPEOF" COMMANDS TO THE FOLLOWING EXPRESSIONS TO DETERMINE 
+THEIR TYPE (E.G. NUMERIC, CHARACTER, DATE, ETC)
+
+	3
+	
+	class(3)
+	
+	typeof(3)
+	
+	my.var = "My name is Steve"
+	
+	class(my.var)
+	
+	typeof(my.var)
+	
+	typeof("This is a string")
+	
+	current.date = Sys.Date()
+	
+	class(current.date)
+	
+	typeof(current.date)
+	
+	typeof(5.45 + 35.67)
+	
+	typeof(sqrt(37.6) + log(3000))
+	
+	4 > 5
+	
+	typeof(4 > 5)
+
+
+1.3) NUMERIC VARIABLES – REMEMBER THAT FOR THE CLASS OF NUMERIC R LET'S COERCE AND 
+INTERROGATE BETWEEN INTEGERS AND FLOATING VARIABLES:
+
+	as.integer(5.67)
+	
+	is.integer(5.67)
+	
+	is.integer(as.integer(5.67))
+	
+	class(as.integer(5.67))
+
+1.4) HERE WE CAN TAKE A CHARACTER VALUE AND TURN IT INTO A NUMERIC:
+
+	as.numeric("5.78") + 1
+
+1.5) BUT BE CAREFUL TO DO THE CONVERSION BEFORE YOU TRY TO USE IT IN A CALCULATION:
+
+	"5.78" + 1
+
+
+PROBLEM 2.0) CHARACTER VARIABLES ARE CREATED BY USING QUOTATION MARKS. THESE TYPES OF 
+VARIABLES USUALLY WIND UP BEING LABELS OR FACTORS. THERE ARE A NUMBER OF FUNCTIONS THAT 
+WE CAN USE TO GET META INFORMATION:
+
+	my.string = "This is a string"
+	
+	nchar(my.string)
+	
+	toupper(my.string)
+	
+	tolower(toupper(my.string))
+	
+	strsplit(my.string," ")
+	
+	paste(my.string, my.string, sep=" : ")
+	
+	another.string = "Hello my name is Steve"
+	
+	my.char.var = paste(my.string, another.string, sep = ". ")
+
+2.1) NOTE THAT WE CAN USE THE SUBSTR FUNCTION TO EXTRACT CERTAIN PARTS OF THE STRING. 
+THE NEXT COMMAND WILL EXTRACT THE FIRST 10 CHARACTERS. NOTE THAT THE "1" INDICATES THAT 
+YOU ARE BEGINNING AT THE 1ST CHARACTER.
+
+	substr(my.char.var, 1, 10)
+	
+	substr(my.char.var,5 , 5)
+
+3.0) DATES - LET'S CHECK OUT SOME OF THE CAPABILITIES WE HAVE WITH DATES IN R. CAREFULLY 
+INSPECT THE OUTPUT FROM THE FOLLOWING EXPRESSIONS:
+
+	Sys.Date()
+	 
+	Sys.Date() + 10
+
+3.1) WE CAN TAKE CHARACTER VARIABLES AND TURN THEM INTO TRUE DATES BY USING COERCION. 
+SO IF WE REPRESENT THE DATE DECEMBER 12TH 2012 AS FOLLOWS (YYYY-MM-DD)
+
+	string = "2012-12-25"
+	
+	as.Date(string)
+	
+	class(as.Date(string))
+
+OF COURSE WE DON'T HAVE TO CONVERT TO DATE FORMAT IF WE JUST WANT TO DO A QUICK DATE 
+CALCULATION. 
+
+	difftime("2005-10-21 08:32:58","2003-8-15 09:18:05")
+
+3.2) CHECK THIS EXAMPLE. HERE WE WISH TO COERCE THE DATE MARCH 17TH 1996 INTO A DATE. 
+HOWEVER, THE STRING IS MMDDYYYY. 
+
+	as.Date("03/17/1996")  # PRODUCES AN ERROR
+	
+	as.Date("03/17/1996", format="%m/%d/%Y")
+
+
+3.3) WE CAN PICK APART THE DATE ONCE WE HAVE IT. THAT IS WE CAN EXTRACT SPECIFIC PARTS 
+OF IT:
+
+	format(my.date,"%Y")   
+	
+	format(my.date,"%b")
+	
+	format(my.date,"%b %d %Y")
+
+3.4) WE CAN ALSO USE THE SYS.TIME() FUNCTION TO GET BOTH TIME AND DATE:
+
+	Sys.time()
+	
+	Sys.time() + 20     # Add 20 seconds 
+	
+	( Sys.time() + 20 ) > Sys.time()
+	
+	in.the.future = Sys.time() + 60  # Into the future by a minute
+	
+	in.the.future - Sys.time()
+
+3.5) WHEN PROCESSING A SERIES OF DATES FROM AN EXCEL FILE WE CAN RAPIDLY PROCESS THEM 
+USING THE STRPTIME COMMAND:
+
+	my.dates = 
+	
+	strptime(c("03/27/2003","03/27/2003","04/14/2008","03/27/1958",
+	"10/31/206","11/21/2011"),format="%m/%d/%Y")
+	
+	class(my.dates)
+	
+	range(my.dates)
+	
+	my.dates[1] > my.dates[4]
+
+PROBLEM 4) LOGICAL VARIABLES ARE IMPORTANT BECAUSE THEY ALLOW YOU TO DO COMPARISONS:
+
+
+	4 > 5
+	
+	4 < 5
+	
+	my.var = 4 < 5
+	
+	my.var
+
+4.1) WE CAN COMBINE THE LOGICAL VARIABLES INTO COMPOUND LOGICAL EXPRESSIONS SUCH 
+AS THE FOLLOWING, WHICH USES THE "&" OPERATOR
+
+	my.var = (4 > 5) & ( 4 < 5) 
+	
+	my.var
+
+# BOTH EXPRESSIONS MUST BE TRUE IN ORDER FOR THE COMBINED EXPRESSION TO BE TRUE.
+
+	my.var = (4 < 5) & (4 < 5)
+	
+	my.var
+
+4.2) WE COULD ALSO USE THE LOGICAL "OR" OPERATOR "|". IN THIS CASE EITHER EXPRESSION 
+COULD BE TRUE AND THE RESULTING COMBINATION WOULD BE TRUE. NOTE THAT (4 > 5) IS FALSE.
+
+	my.var = (4 > 5) | (4 < 5)
+
+4.3) THE NEXT EXAMPLE INVOLVES A MORE COMPLEX LOGICAL EXPRESSION. YOU CAN EXAMINE EACH 
+OF THE INDIVIDUAL EXPRESSIONS TO SEE WHICH ARE TRUE AND WHICH ARE FALSE. 
+
+	my.var = ( (4 > 5) | (4 < 5) ) & ( (2 > 5) | (2 < 5) )
+	
+	my.var
+
+WORKING WITH VECTORS
+
+PRACTICE 5.0) NEXT UP WE WILL LOOK AT THE TOPIC OF VECTORS. THIS IS AN IMPORTANT 
+CONCEPT IN R SO PLEASE MAKE SURE TO WORK THROUGH ALL OF THESE LAB EXERCISES. 
+
+Creating some vectors. This is easy and can be done a number of ways:
+
+	y = 5.4     # A single assignment
+	
+	y = 1:10    # A vector with 10 elements (1 .. 10) 
+	
+	y = c(1,2,3,4,5,6,7,8,9,10) 
+
+# SAME AS ABOVE YET USING THE “C” FUNCTION
+
+	y = scan()   # Allows you to enter in elements from the keyboard
+	1: 10
+	2:  9
+	3:  8 
+	4:  7
+	5:  6
+	6:  5
+	7:  4
+	8:  3
+	9:  2
+	10: 1 
+	<enter a blank space>
+
+5.2) CREATING A VECTOR TO CONTAIN HEIGHT MEASUREMENTS:
+
+	height = c(59,70,66,72,62,66,60,60)
+	
+	# LET’S CHECK OUT THE VARIOUS WAYS WE CAN INDEX INTO THE VECTOR
+	
+	height[1:5]			# Get first 5 elements
+	
+	height[5:1]			# Get first 5 elements in reverse
+	
+	height[-1]			# Get all but first element
+	
+	
+	height[-1:-2]			# Get all but first two elements
+	
+	height[c(1,5)]			# Get just first and fifth elements
+	
+
+5.3) WE CAN APPLY LOGICAL TESTS TO A VECTOR TO FIND ELEMENTS THAT SATISFY A 
+CONDITION SET
+
+	height
+	
+	height == 72		# Test for values equal to 72
+	
+	height[height == 72]
+	
+	# SAME AS 
+	
+	logical.vector = height > 60
+	
+	height[ logical.vector ]
+	
+
+5.4) COMPARISONS CAN BE COMBINED LIKE A DATABASE QUERY:
+
+	height[ height > 60 & height < 70 ] 
+	
+	# NOTE USE OF THE "&" / AND OPERATOR
+	
+	height[ height > 60 & height <= 70 ]  
+	
+	height[ height %% 2 == 0 ]    # Find even numbers
+
+
+5.5) WE CAN ALSO DO ARITHMETIC ON VECTORS
+
+	weight = c(117,165,139,142,126,151,120,166) 
+	
+	weight/100
+	
+	sqrt(weight)
+	
+	weight^2
+	
+	sum((weight-mean(weight))^2)/(length(weight)-1)  
+	
+	# THE VARIANCE FORMULA
+
+	var(weight)
+
+5.6) MORE VECTOR ARITHMETIC. ALSO WE DEMONSTRATE HOW TO APPEND VECTORS
+
+	weights = c(117,165,139,142,126,151,120,166) 
+	
+	new.weights = weights + 1		# Vector Addition
+	
+	new.weights
+	
+	append(weights,new.weights) # Combines the two vectors 
+	
+	c(weight,new.weights)    # Equivalent to the above
+
+
+5.7) WE CAN ALSO CREATE CHARACTER VECTORS
+
+	gender = c("F","M","F","M","F","M","F","M")  
+	
+	smoker = c("N","N","Y","Y","Y","N","N","N")  
+	
+	table(gender,smoker)	# Let's count them
+	
+	prop.table(table(gender,smoker))
+		  
+	library(lattice)
+	
+	barchart(table(gender,smoker), auto.key=TRUE,
+			 main="Smoking M/F")
+
+5.8) NAMING VECTOR ELEMENTS IS AN IMPORTANT WAY TO KEEP TRACK OF INFORMATION.
+
+	( my.counts = c(25,67,99,11,45,76) )
+	
+	names(my.counts)
+	
+	names(my.counts) = 0:5
+	
+	names(my.counts)
+	
+	names(my.counts) = LETTERS[1:6] # LETTERS is predefined in R
+	
+	names(my.counts)
+	
+	height = c(59,70,66,72,62,66,60,60)
+	
+	new.names = paste("ID",1:8,sep="_")
+	
+	new.names
+	 
+	names(height) = new.names
+	
+	my.names = c("Jacqueline", "Frank" , "Babette",
+			   "Mario","Adriana","Esteban","Carole",
+			   "Louis")
+	
+	names(height) = my.names
+	
+	height
+	
+	which(height > 60)
+
+	mean(height)  
+
+PRACTICE 6) MISSING VALUES. LET'S GENERATE A VECTOR AND INTRODUCE SOME MISSING VALUES:
+
+	gender = c("F","M","F","M","F","M","F","M")  
+	
+	length(gender)	 # Gives current length of vector
+	
+	length(gender) = 10 # Sets length of the vector
+	
+	gender # The last 2 elements are NA - missing value
+	
+	is.na(gender)
+
+# WHICH ELEMENTS CONTAIN MISSING VALUES
+
+	which(is.na(gender)) 
+
+# WHICH ELEMENTS DON’T HAVE MISSING VALUES
+
+	which(!is.na(x)) 
+
+# GET ELEMENTS WHICH AREN'T MISSING
+
+	gender[!is.na(gender)]	 
+
+6.1) EXPLORE SOME OF THE VECTOR FUNCTIONS AVAILABLE TO YOU:
+
+	mean(height)		# Get the mean	
+	
+	sd(height)		# Get standard deviation
+	
+	min(height)		# Get the minimum
+	
+	range(height)		# Get the range
+	
+	fivenum(height)		# Tukey's summary 
+	
+	length(height)		# Vector length
+	
+	quantile(height)	# Quantiles
+	 
+	my.vals = rnorm(10000,20,2)   
+
+# CREATE 10,000 VALUES FROM A NORMAL DISTRIBUTION
+
+	max(my.vals)  # Find the maximum value
+	
+	which.max(my.vals)  # Find which element number it is ?
+	
+	my.vals[ which.max(my.vals) ]
+
+6.3) HERE IS ANOTHER VECTOR. WHAT IF WE WANTED TO COMPUTE THE SUM OF THE THREE LARGEST 
+VALUES ?
+
+	x = c(20,22,4,27,9,7,5,19,9,12)
+	
+	sort(x)
+	 
+	rev(sort(x))
+	
+	rev(sort(x))[1:3]
+	
+	sum(rev(sort(x))[1:3])
+
+6.4) WE CAN ALSO INVESTIGATE THE RELATIONSHIPS BETWEEN VECTORS IN TERMS OF SETS. 
+THERE ARE THREE PRIMARY FUNCTIONS FOR LOOKING AT RELATIONSHIPS BETWEEN SETS: UNION, 
+INTERSECT, AND SETDIFF 
+
+	( set1 = letters[1:5] )
+	
+	( set2 = letters[4:7] )
+	
+	union(set1,set2)
+	
+	intersect(set1,set2)
+	
+	setdiff(set1,set2)
+	
+	setdiff(set2,set1)
+
+PRACTICE 7.0) R HAS A NUMBER OF FACILITIES FOR GENERATING COMMONLY USED SEQUENCES OF 
+NUMBERS. FOR EXAMPLE 1:10 CAN REPRESENT THE VECTOR C(1, 2, ...,10)
+
+	1:10
+	
+	10:1
+	
+	7.1) THE SEQ() FUNCTION CAN BE USED TO GENERATE SEQUENCES WITH VARIATION:
+	
+	x = seq(-2, 2, by=.5)
+	
+	x
+	
+	# WE CAN USE THIS APPROACH TO FIND EVERY 20TH ELEMENT OF A VECTOR
+	
+	set.seed(123)
+	
+	my.vec = rnorm(100,10,5)
+	
+	( index.seq = seq(20,length(my.vec),20) )
+	
+	my.vec[ index.seq ]
+
+
+7.2) A RELATED FUNCTION IS REP(), WHICH CAN BE USED FOR REPLICATING AN OBJECT IN VARIOUS 
+WAYS.
+
+	s5 = rep(x, times=5)  # Makes 5 copies of x end to end
+	
+	s6 = rep(x, each = 5)   # Makes 5 copies of each element
+	
+	my.data = rnorm(1000, 10, 5)
+	
+	range(my.data)
+	
+	breaks = seq(-5, 27, 2)
+	
+	hist(my.data,breaks = breaks)
+
+PRACTICE 8.0) THE SAMPLE FUNCTION PROVIDES A WAY TO RANDOMLY EXTRACT SOME NUMBER OF 
+ELEMENTS FROM A VECTOR.
+
+LETTERS # A built-in vector with the alphabet
+
+	sample(LETTERS)
+	
+	sample(LETTERS, replace = TRUE )
+	
+	sample(LETTERS, 8, replace = FALSE )
+
+8.1) SAMPLING TO SIMULATE A DISTRIBUTION OF COIN TOSSES:
+
+	my.coins = c("Heads","Tails")		# Create a coin vector
+	 
+	sample(my.coins, 5, replace=TRUE)		# 5 coin tosses
+
+# LET'S SIMULATE 1,000,000 TOSSES AND TABULATE 
+
+	table(sample(my.coins, 1000000, replace=TRUE))
+	
+	# NOW LET'S CHEAT AND RIG THE COIN
+	
+	table(sample(my.coins,1000000,replace=TRUE,prob=c(.75,.25)))
+
+8.2) # LET'S ROLL A SINGLE DICE 150 TIMES. 
+
+	dice = 1:6
+	
+	# CALL THE TABLE FUNCTION TO COUNT THE RESULTS
+	
+	table(sample(dice,150,replace=TRUE))
+
+8.3) # CREATE A DECK OF CARDS
+
+	cards = c("Ace",2:10,"Jack","Queen","King")
+	
+	suites = c("Clubs","Diamonds","Hearts","Spades")
+	 
+	deck = rep(cards,4)
+	
+	complete.deck = paste(deck, suites, sep = "_of_")
+
+# SAMPLE FROM IT – A POKER HAND of 5 CARDS
+
+	sample(complete.deck, 5, replace = FALSE)
+
+PROBLEM 9.0) WORKING WITH CHARACTER VECTORS
+
+	s1 = "I'm a string"
+	
+	s2 = "I'm a string"
+	
+	s1; s2
+	
+	length(s1)
+	
+	s1 == s2
+	
+	identical(s1,s2)
+	
+	nchar(s1)
+	
+	# WE CAN PRINT OUT ITS CONTENTS A CHARACTER AT A TIME. 
+	# THIS IS NOT THE BEST WAY TO DO THIS BUT IS POSSIBLE
+	
+	for (ii in 1:nchar(my.str)) {
+		cat(substr(my.str,ii,ii))
+	}
+
+9.1) LET'S LOOK AT A TRUE CHARACTER VECTOR:
+
+	dna = c("A","A","C","G","A","C","C","C","G","G","A","T","G","A","C","T","G","A","A","C")
+	
+	dna
+	
+	rev(dna)   # Switch the direction
+	
+	length(dna)  # Count the characters
+	
+	# "SHRINK THE VECTOR TO ONE ELEMENT
+	
+	my.str = paste(dna,collapse="")  
+	
+	length(my.str) # One element !
+	
+	my.str
+	
+	rev(my.str)  # Same as above 
+	
+	nchar(my.str) # Still shows the correct number of characters
+
+9.2) LET'S EXTRACT SOME CHARACTERS FROM THIS CHARACTER STRING
+
+	substr(my.str,2,8) #Get 8 characters starting at the 2nd
+	
+	# SET THE 2nd through 8th characters to TTTTTTT
+	
+	substr(my.str,2,8) = "TTTTTTT"
+
+PRACTICE 10) SEARCHING FOR SUBSTRINGS. WE'LL CREATE A STRING OF SIMULATED DNA:
+
+dna = c("A","A","C","G","A","C","C","C","G","G","A","T","G","A","C","T","G", "A","A","C")
+
+10.1) LOCATE ALL THE G CHARACTERS AND COUNT THEM. DO THE SAME WITH C.
+
+	grep("G",dna)
+	
+	my.g = length(grep("G", dna))
+	
+	my.c = length(grep("C",dna))
+
+10.2) LET'S ACCOMPLISH A MORE INVOLVED EXAMPLE
+
+	char.vec = c("here","we","are","now","in","winter")
+	
+	grep("ar",char.vec)
+	
+	char.vec[3]
+	
+	char.vec[ grep("ar",char.vec) ]
+	
+	grep("zz",char.vec)  # Nothing returned
+	
+	grep("i", char.vec)
+	
+	grep("i", char.vec, value=T)
+
+PROBLEM 11) EXPERIMENT WITH USING REGULAR EXPRESSIONS. READ IN THE FILE THAT HAS THE 
+NAMES OF ALL THE WORLD'S COUNTRIES.
+
+	url = "http://www.bimcore.emory.edu/BIOS560/DATA.DIR/worldfloras.txt"
+	
+	my.df = read.csv(url,header=T,sep="\t")
+	
+	nations = as.character(my.df$Country)
+	
+	11.1) WE'LL NOW DO SOME BASIC PROCESSING TO REVIEW WHAT WE KNOW SO FAR.
+	
+	head(nations,4)
+	
+	tail(nations,4)
+	
+	grep("R",nations)
+	
+	nations[ grep("R",nations) ]
+	
+	grep("R", nations, value = TRUE)
+
+11.2) BUT WE CAN MAKE THINGS EASIER BY USING REGULAR EXPRESSIONS. HERE WE FIND ALL 
+COUNTRIES THAT BEING WITH R.
+
+	grep("^R",nations, value = TRUE)
+
+# HERE WE FIND COUNTRIES WITH A SPACE IN THEIR NAME (COMPOUND NAMES)
+
+	grep(" ",nations, value = T)
+
+# FIND COUNTRIES THAT END IN THE CHARACTER "Y"
+
+	grep("y$", nations, value=TRUE)
+
+# FIND ALL COUNTRY NAMES THAT BEGIN WITH LETTERS C, D, AND E
+
+	grep("^[C-E]", nations, value=T)
+
+# FIND THE ELEMENTS IN THE COUNTRY NAMES VECTOR THAT END WITH LETTERS A, C, AND E
+
+	grep("[a-c]$",nations)
+
+# NOW FIND ALL THE COUNTRY NAMES THAT DO NOT END WITH LETTERS A, C, AND E
+
+	nations[ -grep("[a-c]$",nations) ]
+
+# FIND ALL COUNTRY NAMES THAT END IN "Y" AND ARE PRECEEDED BY EXACTLY 5 CHARACTERS
+
+	grep("^.....y$", nations, value=T)
+
+PROBLEM 12) SUBSTITUTING CHARACTERS
+
+	text = c("arm","leg","head","foot","hand","hindleg","elbow")        
+	
+	gsub("h","H",text)
+	
+	gsub("o","O",text)
+	
+	gsub("^.","O",text)
+
+
+
+WORKING WITH MATRICES
+
+PRACTICE 13.0) AS WE LEARNED THERE ARE A NUMBER OF WAYS TO CREATE A MATRIX.
+
+	myvec = c(1:12)
+	
+	dim(myvec) = c(3,4)
+
+13.1) WHAT HAPPENS WHEN YOU ATTEMPT TO IMPOSE DIMENSIONS THAT DON'T "FIT" THE VECTOR ?
+
+	dim(myvec = c(5,4))  # Will produce an error message
+	
+	mymat = matrix( c(7, 4, 2, 4, 7, 2), nrow=3, ncol=2) 
+
+13.2) YOU CAN SPECIFY EXPLICITLY THE NROW AND NCOL ARGUMENTS. NOTE ALSO THAT YOU CAN 
+REQUEST THAT THE ROWS GET FILLED FIRST AS OPPOSED TO THE COLUMNS:
+
+	mymat = matrix( c(7, 4, 2, 4, 7, 2), nrow=3, 
+										 ncol=2, byrow=TRUE)
+
+
+13.3) WE CAN CREATE A MATRIX BASED ON EXISTING VECTORS:
+
+	a1 = c(4,5,7,9)
+	a2 = c(9,1,4,3)
+	a3 = c(4,8,6,7)  
+	
+	mymat = matrix(c(a1,a2,a3),4,3)
+	
+	mymat
+
+13.4) WE CAN ALSO "DESTROY" OR "UNDO" MATRICES BY USING THE "C" COMMAND TO REMOVE THE 
+DIMENSIONS. WITH RESPECT TO THE PREVIOUS EXAMPLE:
+
+	dim(mymat)
+	
+	mymat = c(mymat)
+	
+	dim(mymat)
+	
+	mymat
+
+PRACTICE 14.0) WE CAN NAME THE ROWS AND COLUMNS OF A MATRIX, WHICH IS AN IMPORTANT 
+CAPABILITY
+
+	set.seed(123)
+	X = matrix(rpois(20,1.5), nrow=4)
+
+# LET’S SAY THAT THESE REFER TO FOUR TRIALS AND WE WANT TO LABEL THE ROWS “TRIAL.1”, 
+# “TRIAL.2”, ETC.
+
+	rownames(X) = paste("Trial",1:nrow(X),sep=".")
+	
+	rownames(X)
+	
+	X
+
+
+14.1) AND WE CAN DO SOMETHING SIMILAR WITH THE COLUMNS. HERE WE USE "P" AS A PREFIX, 
+WHICH IS SHORT FOR "PATIENT"
+
+	colnames(X) = paste("P",1:ncol(X), sep=".")
+	
+	X
+       
+
+14.2) WE CAN ALSO NAME THE COLUMNS SOMETHING MORE SPECIFIC
+
+	drug.names = c("aspirin","paracetamol","nurofen")
+	
+	colnames(X) = drug.names
+
+14.3) NOW WE CAN BEGIN TO ADDRESS ROWS, COLUMNS, AND ELEMENTS OF THE MATRIX BY USING 
+THESE NAMES OR BY USING NUMBERS:
+
+	X['Trial.1',]            # Get all columns 
+	
+	# GET THE NUROFEN COLUMN FOR TRIAL.1
+	
+	X['Trial.1','nurofen']   
+	
+	# GET ALL TRIALS FOR NUROFEN
+	
+	X[,'nurofen']     
+	
+	# GET THE NUROFEN COLUMN AND PRESERVES MATRIX STRUCTURE IF DESIRED
+	
+	X[,'nurofen',drop=FALSE]   
+	
+	X
+
+14.4) LET'S USE ROW AND COLUMN NUMBERS TO GET ELEMENTS
+
+	set.seed(123)
+	
+	X = matrix(rpois(9,1.5),nrow=3)
+	
+	X[2,2]     # Second row, Second Column
+	
+	diag(X)    # Ah, there is a function that gets the diagonal.
+	
+	X[1:2,2] # Gets 1st and 2nd rows and 2nd column
+	
+	X[1:2,]  # Gets 1st and 2nd rows and ALL columns
+		 
+	X[,c(1,3)] # Get all rows but only columns 1 and 3
+     
+     
+14.5) KEEP IN MIND THAT A MATRIX IS BASICALLY A VECTOR WITH DIMENSIONS SO YOU CAN INDEX 
+INTO IT AS IF IT WERE A VECTOR. EXPLAIN THE BEHAVIOR IN THE FOLLOWING EXAMPLE. WHAT IS 
+IT DOING ?
+
+	set.seed(123)
+	
+	X = matrix(rpois(9,1.5),nrow=3)
+	
+	X[1:4]  # What does this do ?
+	
+	X >= 2   
+	
+	X[ X >= 2 ]
+
+# THE FOLLOWING RETURNS A LOGICAL EXPRESSION THAT LOCATES ALL EVEN ELEMENTS
+
+	X %% 2 == 0   
+
+# THIS FINDS THE ELEMENT NUMBERS THAT REPRESENT EVEN NUMBERS.
+
+	which(X %% 2 == 0)
+
+# SO THIS WILL PRODUCE THE ACTUAL VALUES OF THE ELEMENTS
+
+	X[X %% 2 == 0 ]
+
+# AS WILL
+
+	X[which(X %% 2 == 0)]
+	
+# THIS WILL FIND ALL THE ELEMENTS WHERE THE ROW NUMBER IS EQUAL TO THE COLUMN NUMBER
+
+	row(X) == col(X)
+	
+	X[row(X) == col(X)]
+
+
+PRACTICE 15.0) IN THIS SECTION WE WILL LOOK AT APPLYING SOME FUNCTIONS TO A MATRIX FOR 
+PURPOSES OF SUMMARY.
+
+	set.seed(123) 
+	
+	X = matrix(rpois(9,1.5),nrow=3)
+	
+	colnames(X) = c("aspirin","paracetamol","nurofen")
+	
+	rownames(X) = paste("Trial",1:3,sep=".")
+	
+	mean(X[,3])  # Mean of the 3rd column
+	
+	var(X[3,]) # Variance of the 3rd row
+	
+	rowSums(X)  # Get the sums of all the rows
+	
+	colSums(X)   # Get the sums of all columns
+	
+	rowMeans(X)  # Get the means of each row
+
+PRACTICE 16.0) SOMETIMES WE NEED TO ADD ROWS AND COLUMNS TO A MATRIX. THERE ARE TWO 
+COMMANDS TO DO THIS: RBIND AND CBIND.
+
+# WILL BIND THE VECTOR (4,7,5) TO X
+
+	rbind(X,Trial.4=c(4,7,5)) 
+	
+	hold = c(9,4,3,5,4,6,8,7,6)# We have entries for 3 new rows
+	
+	dim(hold)=c(3,3)               # Make a new matrix
+	
+	my.mat = rbind(X,hold)         # Bind the old to the new
+	
+	my.mat                    # What happened to the rownames ?
+
+
+PRACTICE 16.1) HERE WE USE THE NROW FUNCTION TO COUNT THE NUMBER OF ROWS IN MY.MAT
+
+	rownames(my.mat) = paste("Trial.",1:nrow(my.mat),sep="")
+	
+	my.mat
+
+PRACTICE 17.0) THIS SECTION WILL ILLUSTRATE THE "SWEEP" FUNCTION. FIRST WE GENERATE A 
+NEW MATRIX:
+
+	set.seed(123)
+	
+	X = round(matrix(rnorm(20,10,1),nr=5,nc=4), 2)
+	
+
+17.1) LET's USE THE SWEEP FUNCTION TO EXPRESS EACH COLUMN ELEMENT IN TERMS OF ITS 
+DISTANCE FROM THE MEAN OF THE RESPECTIVE COLUMN. AS AN EXAMPLE, WITH RESPECT TO 
+COLUMN 1:
+
+	colMeans(X)
+	
+	9.44 - 10.194
+		 # So X[1,1] is  -0.754 away from the mean
+	
+	cols = colMeans(X)
+	
+	cols
+	
+	sweep(X,2,cols,"-")  
+
+PROBLEM 18.0: R SUPPORTS COMMON LINEAR ALGEBRA OPERATIONS ALSO.
+
+	A = matrix(c(1,3,2,2,8,9),3,2)
+	
+	7 * A
+		 
+	t(A)
+		 
+	a = c(5,8)
+	
+	A %*% a
+	
+	# NOTE THAT THIS IS DIFFERENT FROM:
+	
+	A * a
+	
+	B = matrix(c(5,8,4,2),2,2)
+	
+	A %*% B
+	
+	diag(B)
+
+	# CREATES A MATRIX WITH 1,2,3 ON THE DIAGONAL
+	
+	diag(c(1,2,3))      
+
+18.1) LET'S SAY WE HAVE THE FOLLOWING SYSTEM OF EQUATIONS. WE CAN ARRIVE AT A SOLUTION 
+BY REPRESENTING THEM AS A MATRIX AND SOLVE FOR X IN THE AX = B EQUATION
+
+
+	A
+		 [,1] [,2]
+	[1,]    1    3
+	[2,]    2    4
+	
+	b = c(7,10)
+	
+	x = solve(A) %*% b
+	
+	x
+
+
+18.2) CREATING MATRICES TO HOLD THE RESULTS OF SOME BASIC SIMULATIONS. WE CAN CREATE 
+MATRICES USING THE REPLICATE COMMAND. THIS APPROACH IS USEFUL IF YOU ARE TRYING TO 
+CAPTURE THE RESULTS OF REPEATED SAMPLING ACTIVITY LIKE WHEN BOOTSTRAPPING. 
+
+THIS GENERATES A 4 COLUMN MATRIX WITH 5 ROWS. EACH COLUMN REPRESENTS A SAMPLE OF 5 
+VALUES FROM A NORMAL DISTRIBUTION. 
+
+	replicate(4,rnorm(5))
+
+# WHAT IF YOU WANT TO TAKE MULTIPLE SAMPLES FROM A KNOWN DISTRIBUTION ?
+
+	set.seed(177)
+	
+	some.pop = rnorm(1000)
+	
+	mean(some.pop)
+	
+	my.boot = replicate(4, sample(some.pop, 5, replace=T))
+
+
+USING R TO CREATE AND MANAGE FACTORS
+
+PROBLEM 19: EXPLAIN THE DIFFERENCE BETWEEN NOMINAL AND ORDINAL VARIABLES. FROM THE LIST 
+BELOW PLEASE INDICATE WHICH ARE NOMINAL AND WHICH ARE ORDINAL. 
+
+VARIABLES				NOMINAL / ORDINAL	
+Height		
+Attractiveness on a scale of 1 to 10		
+Eye Color		
+Marital Status		
+Gender		
+Country of Birth		
+A Patient's Pain Level		
+Social Security Number		
+
+19.1 READ IN THE FOLLOWING DATA FRAME BY EXECUTING THE FOLLOWING COMMANDS:
+
+	url = "http://www.bimcore.emory.edu/BIOS560R/DATA.DIR/hsb2.csv"
+	
+	my.input = read.table(url,header=T,sep=",")
+ 
+19.2 APPLY THE UNIQUE COMMAND TO THIS DATA SET AND INDICATE WHICH VARIABLES ARE 
+CANDIDATES FOR BEING FACTORS. YOU CAN WRITE A FOR-LOOP AS INDICATED IN THE SLIDES OR 
+USE THE SAPPLY COMMAND:
+
+	sapply(my.input, unique)
+	
+	sapply(my.input, function(x) length(unique(x)))
+
+
+19.3 EXECUTE THE FOLLOWING COMMANDS TO GENERATE A VECTOR OF NUMBERS FROM A UNIFORM 
+DISTRIBUTION.
+
+	my.numbers = as.integer(runif(200,1,6))
+
+# APPLY THE UNIQUE FUNCTION TO THIS VECTOR TO SEE HOW MANY UNIQUE VALUES IT TAKES.
+
+	unique(my.numbers)
+
+19.4) CREATE A TABLE SUMMARY OF THIS VECTOR TO GET THE COUNTS OF THIS DATA.
+
+	table(my.numbers)
+
+19.5) LET'S CREATE A FACTOR VERSION OF THIS DATA AND APPLY LABELS TO THE DATA SO IT 
+WILL MAKE BETTER SENSE.
+
+	factor(my.numbers,labels=c("I","II","III","IV","V"))
+
+# NOW LET'S STORE THESE INTO A NEW VARIABLE CALLED "MY.FACTORS":
+
+	my.factors = factor(factor(my.numbers,labels=c("I","II","III","IV","V"))
+
+# NEXT, LET'S USE THE TABLE COMMAND TO SUMMARIZE THE COUNT INFORMATION:
+
+	table(my.factors)
+
+PROBLEM 20: LET'S EXPERIMENT WITH THE CUT COMMAND TO CHOP UP SETS OF CONTINUOUS DATA 
+INTO INTERVALS.
+
+	cut(0:25,breaks=4)
+
+20.1 THE INTERVALS DON'T BEGIN EXACTLY ON ZERO. HOW COULD WE FIX THIS ? 
+
+	cut(0:25,breaks=quantile(0:25),include.lowest=T)
+	
+	# Or we could use the following approach:
+	
+	range(0:25)
+	
+	range(0:25)/4
+	
+	cut(0:25,breaks=c(0,6.25,12.50,18.75,25),include.lowest=T)
+
+# NOTE TOO THAT WE COULD ALSO USE THE "RIGHT" ARGUMENT TO INDICATE WHETHER OR NOT 
+# WE WANT THE INTERVALS TO INCLUDE THE RIGHT MOST VALUE IN THE INTERVAL OR THE LEFT.
+
+	cut(0:25,breaks=c(0,6.25,12.50,18.75,25),right=F)
+
+
+PROBLEM 21: LET'S SIMULATE THE EXAM DATA DISCUSSED IN CLASS AND CHOP IT UP INTO 
+GRADE CATEGORIES:
+
+	set.seed(123)
+	
+	exam.score = runif(25,50,100)
+	
+	cut(exam.score,breaks=c(50,60,70,80,90,100))
+	
+	cut(exam.score,breaks=c(50,60,70,80,90,100),
+				   labels=c("F","D","C","B","A"))
+	
+	my.table = table(cut(exam.score,breaks=c(50,60,70,80,90,100),
+					  labels=c("F","D","C","B","A")))
+	
+	
+	library(lattice)
+	
+	barchart(my.table, main="Grade BarChart",
+					   col=terrain.colors(5))

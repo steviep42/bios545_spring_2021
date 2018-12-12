@@ -1,0 +1,1143 @@
+BIOS560R WEEK #4 LABS – Functions and Debugging
+
+
+1.0) ENTER "T.TEST" AT THE COMMAND PROMPT. WHAT DO YOU GET BACK ? HOW WOULD YOU SEE THE 
+CONTENTS OF THE "T.TEST.DEFAULT" FUNCTION ?
+
+	t.test
+	
+	methods(t.test) 
+
+1.2) PLEASE ISSUE A COMMAND THAT SHOWS YOU WHAT THE ARGUMENTS ARE TO THE PRCOMP FUNCTION. 
+ALSO, SEE IF R HAS A BUILTIN EXAMPLE FOR THIS FUNCTION.
+
+	args(prcomp)
+	
+	example(prcomp)
+
+PROBLEM 2.0) DECLARING FUNCTIONS. WHAT ARE THE KEY COMPONENTS IN A FUNCTION DECLARATION ? 
+WHAT IS RETURNED BY A FUNCTION ? IF ONE DOES NOT INCLUDE AN EXPLICIT RETURN STATEMENT 
+WITHIN A FUNCTION THEN WHAT IS RETURNED FROM THE FUNCTION ? 
+
+2.1) ENTER THE FOLLOWING FUNCTION AS GIVEN. IT HAS AN INTENTIONAL ERROR IN IT. RUN IT TO 
+VERIFY THIS. 
+	
+	my.func <- function( x ) {
+	   my.return.val = sqt(x)
+	   return(my.return.val)
+	}
+	
+	my.func(5) 
+
+2.2) NOW FIX THE FUNCTION DEFINITION BY USING THE FIX COMMAND TO SPELL THE SQRT COMMAND 
+CORRECTLY. NOTE THAT "FIX" DOESN'T FIX THE FUNCTION BY ITSELF ! YOU HAVE TO MAKE THE 
+CHANGE.
+
+	fix(my.func)  
+
+2.3) NOW ENTER IN A FEW MORE EXAMPLE FUNCTIONS TO BECOME FAMILIAR WITH THE PROCESS:
+
+	pythag <- function(a,b) {
+		c = sqrt(a^2 + b^2)
+		return(c)
+	}
+	
+	is.odd <- function(someval) {
+		 if (someval %% 2 == 0) {
+			return(TRUE)
+		 } else {
+			return(FALSE)
+		 }  
+	}
+	
+	my.sample <- function(what.to.sample, num.of.samples, rep) {
+			   temp.samp = sample(what.to.sample, 
+						   num.of.samples, replace=rep) 
+			   return(temp.samp)
+	}
+
+
+2.4) MODIFY THE "PYTHAG" FUNCTION TO RETURN A LIST STRUCTURE CONTAINING THE COMPUTED 
+HYPOTENEUSE AS WELL AS THE TWO ARGUMENTS TO THE FUNCTION. NAME THE LIST ELEMENTS 
+ACCORDINGLY.
+
+	pythag <- function(a,b) {
+		c = sqrt(a^2 + b^2)
+		my.return = list(hypoteneuse = c, a = a, b = b) 
+		return(my.return)
+	}
+
+PROBLEM 3.0) LET'S CREATE AN ANONYMOUS FUNCTION TO RETURN THE MEAN,SD, AND RANGE OF THE 
+1ST,3RD,4T,5TH, AND 6TH COLUMNS. WE COULD WRITE A FOR LOOP TO DO THIS BUT THE APPLY 
+COMMAND MAKES IT EASY FOR US TO APPLY THE FUNCTION.
+
+	my.mat = as.matrix(mtcars[,c(1,3:6)])
+	
+	apply(my.mat,2, function(x) {c(mean=mean(x),sd=sd(x),range=range(x))})
+
+PROBLEM 4.0) WE'LL WORK THROUGH THE IRIS EXAMPLE PRESENTED IN THE LECTURE. THIS IS 
+HELPFUL TO UNDERSTAND HOW FUNCTIONS CAN BE CREATED FROM BASIC LOOP STRUCTURES. RECALL 
+THAT WE WANT TO DO THE FOLLOWING:
+
+4.1) FOR EACH OF THE THREE SPECIES WE WOULD LIKE TO PLOT THE SEPAL.LENGTH VS SEPAL.WIDTH. 
+EACH SPECIES SHOULD HAVE ITS OWN DISTINCT COLOR. WE WOULD ALSO LIKE TO SAVE EACH OF THESE 
+PLOTS TO A FILE FOR LATER USER. TO DO THIS WE WOULD FOLLOW A WORK 
+FLOW LIKE:
+
+	1) Generate three colors 
+
+	2) Extract the data for the species name
+
+	3) plot Sepal.Length vs Sepal.Width
+
+	4) save the file
+
+4.2) FOR THE FIRST SPECIES ONLY WE COULD DO THIS:
+
+	my.cols = rainbow(3)
+	
+	my.species = subset(iris, Species == "setosa")
+	
+	plot(Sepal.Length ~ Sepal.Width, data = my.species, 
+				main = "Sepal Length vs Sepal Width", col = my.cols[1])
+	
+	png(file="species.png", bg="transparent")
+	
+	plot(Sepal.Length ~ Sepal.Width, data = my.species, 
+				main = "Sepal Length vs Sepal Width", col = my.cols[1])
+	dev.off()
+
+4.3) BUT TO DO THIS FOR ALL 3 SPECIES THE WORKFLOW LOOKS LIKE:
+
+	Generate 3 colors
+	
+	for each species
+	
+	  extract the data for the species number 
+	
+	  plot Length vs Width
+	
+	  save the file
+	
+	end for
+
+
+my.cols = rainbow(3)  # Get 3 color names
+
+par(mfrow=c(1,3))     # Get the plots to the screen all on one plot window
+jj = 1
+for (ii in levels(iris$Species)) {
+     my.species = subset(iris, Species == ii)
+     my.title = "Sepal Length vs Sepal Width"
+     plot(Sepal.Length ~ Sepal.Width, data = my.species, main = my.title,
+                       col=my.cols[jj])
+#
+# Now we repeat the Subject plot except here we redirect to a file per subject
+#
+
+     my.file = paste("species",ii,".png",sep="")
+     png(file=my.file, bg="transparent")
+     plot(Sepal.Length ~ Sepal.Width, data = my.species, main = my.title,
+                       col=my.cols[jj])
+     dev.off()
+     jj = jj + 1
+}
+
+4.4) IF WE WANT TO PUT THIS INTO A FUNCTION IT WOULD BE EASY TO DO. THERE ARE A NUMBER OF 
+WAYS WE COULD IMPROVE ON THE FUNCTION BUT THIS VERSION WILL WORK. 
+
+
+my.iris <- function(somedata) {
+my.cols = rainbow(3)  # Get 3 color names
+
+par(mfrow=c(1,3))     # Get the plots to the screen all on one plot window
+jj = 1
+for (ii in levels(somedata$Species)) {
+     my.species = subset(iris, Species == ii)
+     my.title = "Sepal Length vs Sepal Width"
+     plot(Sepal.Length ~ Sepal.Width, data = my.species, main = my.title,
+                       col=my.cols[jj])
+#
+# Now we repeat the Subject plot except here we redirect to a file per subject
+#
+     my.file = paste("species",ii,".png",sep="")
+     png(file=my.file, bg="transparent")
+     plot(Sepal.Length ~ Sepal.Width, data = my.species, main = my.title,
+                       col=my.cols[jj])
+     dev.off()
+     jj = jj + 1
+}
+}
+
+my.iris(iris)
+
+
+ENVIRONMENTS 
+
+PROBLEM 5.0 IN THIS SECTION WE LOOK AT ENVIRONMENTS. THESE ARE IMPORTANT TO UNDERSTAND 
+IF YOU WANT TO BE A GOOD FUNCTION WRITER.
+
+5.1) WHAT IS MEANT BY A VARIABLE BEING "BOUND" OR "UNBOUND" ? HOW ARE THEY RELATED TO 
+A FRAME ? WHAT IS THE GLOBAL FRAME ?
+
+5.2) WHAT IS THE DEFINITION OF AN ENVIRONMENT ? HOW WOULD WE LIST THE CURRENT CONTENTS 
+OF THE GLOBAL ENVIRONMENT ? 
+
+	g <- globalenv()
+	 
+	while (environmentName(g) != 'R_EmptyEnv') { g <- parent.env(g); cat(str(g, give.attr=F))}
+	
+	search()
+
+5.3) WE'LL CREATE A NEW ENVIRONMENT CALLED "MY.ENV".  FIRST MAKE SURE TO REMOVE ALL 
+CURRENT BINDINGS AND OBJECTS IN THE CURRENT GLOBAL FRAME BY ISSUING THE COMMAND:
+
+	rm(list = ls())
+	
+	environment()
+
+5.4) NEXT CREATE A VARIABLE AND "BIND" IT TO THE VALUE OF 1234
+
+	a = 1234
+	
+	ls()
+
+5.5) NEXT CREATE A NEW ENVIRONMENT CALLED "NEW.ENV()"
+
+	my.env <- new.env()
+	
+	ls()
+	
+	ls(my.env)
+	
+	5.6) We'll next use the assign function to set variables in my.env
+	
+	assign("a", 999, envir=my.env)
+	
+	assign("foo","This is the variable foo",envir=my.env)
+
+
+5.7) THERE ARE NOW TWO VARIABLES NAMED A, ONE IN THE GLOBAL ENVIRONMENT AND ONE IN MY.ENV.
+
+	ls()
+	[1] "a"      "my.env"
+	
+	If you do ls on "my.env" we now see the variables there
+	
+	ls(my.env)
+	
+	
+	a          # Gets "a" from the global env
+	
+	my.env$a   # Gets "a" from my.env
+
+
+5.8) WHEN A FUNCTION IS EVALUATED, R LOOKS IN A SERIES OF ENVIRONMENTS FOR ANY VARIABLES 
+IN SCOPE. 
+
+THE EVALUATION ENVIRONMENT IS FIRST, THEN THE FUNCTION'S ENCLOSING ENVIRONMENT, WHICH WILL 
+BE THE GLOBAL ENVIRONMENT FOR FUNCTIONS DEFINED IN THE WORKSPACE. OBSERVE THE FOLLOWING:
+
+	a
+	[1] 1234
+	
+	f <- function(x) { x + a }  
+	
+	# Note that f is defined in the global environment
+	
+	environment(f) 
+	
+	
+	f(4321)  4321 + 1234 (a is 1234) 
+	[1] 5555
+	
+	But we can change the environment of the function very easily:
+	
+	environment(f) <- my.env
+	
+	f(4321)
+	[1] 5320     # What happened ? the function picked up "a" from new.env instead of the 
+	parent environment.
+
+PROBLEM 6.0) THE SCOPING RULES HELP US INTERPRET HOW VARIABLES BECOME "BOUND" IN THE 
+DIFFERENT FRAMES/ENVIRONMENTS. R USES LEXICAL / STATIC SCOPING. WHEN FIRST USING OR 
+PROGRAMMING WITH R ONE TYPICALLY DOES NOT START CREATING ENVIRONMENTS. IT IS MORE COMMON 
+TO RELY UPON LEXICAL SCOPING WITHIN FUNCTIONS TO KEEP SOME VARIABLES LOCAL TO FUNCTIONS. 
+
+
+	f <- function(x) {
+	   return(x + a)
+	}
+	
+	a = 10
+	x = 5
+	  
+f(2)    # This will equal 12
+
+WHEN F IS CALLED, THE LOCAL BINDING OF X = 2 SHADOWS THE GLOBAL BINDING X = 5. THE 
+VARIABLE A IS A FREE VARIABLE IN THE FRAME OF THE FUNCTION CALL, AND SO THE GLOBAL 
+BINDING A = 10 APPLIES.
+
+6.1) HERE WE HAVE TWO FUNCTIONS DEFINED "AT THE SAME LEVEL". IN R, THE GLOBAL 
+BINDING A = 10 IS USED WHEN F CALLS G, BECAUSE A IS A FREE VARIABLE IN G, AND G IS 
+DEFINED AT THE COMMAND PROMPT IN THE GLOBAL FRAME.
+
+	a = 10  
+	
+	f <- function(x) {
+		 a = 5
+		 g(x)
+	}
+	 
+	g <- function(y) {
+		return(y + a)
+	}
+	
+	f(2)
+	[1] 12
+
+6.2) THE LOCAL FUNCTION G IS DEFINED WITHIN THE FUNCTION F, AND SO THE ENVIRONMENT OF G 
+COMPRISES THE LOCAL FRAME OF G FOLLOWED BY THE ENVIRONMENT OF F. 
+
+BECAUSE A IS A FREE VARIABLE IN G, THE INTERPRETER NEXT LOOKS FOR A VALUE FOR A IN THE 
+LOCAL FRAME OF F; IT FINDS THE VALUE A = 5, WHICH SHADOWS THE GLOBAL BINDING A = 10
+
+	a = 10
+	
+	f <- function(x) {
+		a = 5
+		g <- function(y) {
+		   return(y + a)
+		}
+		g(x)
+	 }
+	 
+	f(2)
+	[1] 7
+
+
+PROBLEM 7.0) ARGUMENTS TO R HAVE A SPECIFIC ORDER, CAN BE NAMED, AND CAN BE GIVEN DEFAULT 
+VALUES. WORK THROUGH THESE SIMPLE YET DEMONSTRATIVE EXAMPLES, WHICH SHOW THAT ARGUMENTS 
+CAN BE MATCHED BY NAME OR POSITION.
+
+	log(100)
+	[1] 4.60517
+	
+	log(base=10,x=100)
+	[1] 2
+	
+	log(base=10,100)
+	[1] 2
+	
+	log(10,100)   # This is taking the log of 10 instead of 100
+	
+	args(log)  # Gives us the expected argument order
+	function (x, base = exp(1))
+	
+	log(x=100,base=10)   # Back to normal
+	[1] 2
+
+7.1) SO GIVEN THAT ARGUMENTS CAN BE MATCHED BY NAME OR POSITION THEN ALL OF  FOLLOWING 
+CALLS TO SD ARE ALL EQUIVALENT THOUGH YOU SHOULD VERIFY IT YOURSELF.
+
+	mydata <- rnorm(100)
+	
+	sd(mydata)
+	
+	sd(x = mydata)
+	
+	sd(x = mydata, na.rm = FALSE)
+	
+	sd(na.rm = FALSE, x = mydata)
+	
+	sd(na.rm = FALSE, mydata)
+
+7.2) YOU CAN MIX POSITIONAL MATCHING WITH MATCHING BY NAME. WHEN AN ARGUMENT IS MATCHED 
+BY NAME, IT IS "TAKEN OUT" OF THE ARGUMENT LIST AND THE REMAINING UNNAMED ARGUMENTS ARE 
+MATCHED IN THE ORDER THAT THEY ARE LISTED IN THE FUNCTION DEFINITION.
+
+	mydata = data.frame(cbind(x=rnorm(100),y=rnorm(100)))
+	
+	args(lm)
+	
+	# The following two calls are equivalent.
+	
+	lm(data = mydata, y ~ x, model = FALSE, 1:100)
+	
+	lm(y ~ x, mydata, 1:100, model = FALSE)
+	
+	7.3) TRY TO USE NAMED ARGUMENTS ESPECIALLY IN CASES WHERE THERE IS A LONG LIST OF 
+	ARGUMENTS. IF YOU USE NAMED ARGUMENTS THEN YOU DON'T HAVE TO REMEMBER THE POSITION 
+	OF THE ARGUMENTS.
+	
+	plot(faithful) 
+	
+	plot(faithful, bty="l") 
+	
+	plot(faithful, main="Default")  
+	
+	plot(faithful, tck=0.05, main="tck=0.05")
+	
+	plot(faithful,xlab="Gallons",
+				  pch=21,bg="blue",col="red")
+
+
+PROBLEM 8.0) ARGUMENT CHECKING IS IMPORTANT. IT IS YOUR FIRST STEP TOWARDS DEBUGGING. 
+ALL OF OUR EXAMPLES HAVE ASSUMED THAT THE ARGUMENTS ARE OF THE CORRECT TYPE. BUT WHAT 
+HAPPENS WHEN THEY AREN'T ?
+
+	pythag(3,4)     # Works fine
+	
+	pythag(3,"4")   # Dies because "4" is a character
+	
+	pythag()         # No arguments supplied
+	
+	pythag(3,)       # Only one argument supplied
+	
+	8.1) For missing arguments we can handle things like this:
+	
+	pythag <- function(a,b) {
+		 if (missing(a) || missing(b)) {
+				stop("Cannot process missing values")
+		  }
+		 z = sqrt(a^2 + b^2)
+		 return(z)
+	}
+	
+	pythag()
+
+
+OR WE COULD ALSO MAKE SURE THAT THERE WERE SOME DEFAULT VALUES FOR THE ARGUMENTS. BY 
+DOING THIS THERE WOULD NEVER BE A PROBLEM WITH MISSING ARGUMENTS. 
+
+	pythag <- function(a = 3 ,b = 4) {
+			z = sqrt(a^2 + b^2)
+			return(z)
+	}
+	
+	pythag()
+
+
+8.2) FOR MISSING ARGUMENTS AND CHECKING FOR NON-NUMERIC ARGUMENTS WE COULD SO SOMETHING 
+LIKE:
+
+	pythag <- function(a,b) {
+		 if (missing(a) || missing(b)) {
+				stop("Cannot process missing values")
+		  }
+		 if (!is.numeric(a) || !is.numeric(b)) {
+				stop("I need real values to make this work")
+		 }
+		 z = sqrt(a^2 + b^2)
+		 return(z)
+	} 
+
+8.3) AND SINCE OUR ARGUMENTS NEED TO BE POSITIVE LET'S PUT IN SOME CHECKING FOR THAT
+
+
+	pythag <- function(a,b) {
+		 if (missing(a) || missing(b)) {
+				stop("Cannot process missing values")
+		  }
+		 if (!is.numeric(a) || !is.numeric(b)) {
+				stop("I need real values to make this work")
+		 }
+		 if (a <=0 || b <= 0) {
+				stop("Arguments need to be positive")
+		 }
+		 z = sqrt(a^2 + b^2)
+		 return(z)
+	}
+
+
+PROBLEM 9.0) WE CAN PASS AN UNSPECIFIED NUMBER OF PARAMETERS TO A FUNCTION BY USING THE 
+... NOTATION IN THE ARGUMENT LIST. THIS IS USUALLY DONE WHEN YOU WANT TO GIVE THE USER 
+THE OPTION OF PASSING ANY NUMBER OF ARGUMENTS THAT ARE INTENDED FOR ANOTHER FUNCTION.
+
+SUPPOSE YOU WRITE A SMALL FUNCTION TO DO SOME PLOTTING. BASICALLY YOU WANT TO HARD CODE 
+IN THE COLOR RED FOR ALL PLOTS.
+
+	> my.plot <- function(x,y, ...) {
+		plot(x,y, col="red",...)
+	}
+
+
+9.1) THE FUNCTION MY.PLOT NOW ACCEPTS ANY ARGUMENT THAT CAN BE PASSED TO THE PLOT FUNCTION 
+(LIKE COL, XLAB, ETC.) WITHOUT NEEDING TO SPECIFY THOSE ARGUMENTS IN THE HEADER OF MY.PLOT.
+
+	my.plot(mtcars$wt, mtcars$mpg, pch=15, lty=2, xlim=c(0,40))
+
+
+9.2) THE ARGUMENTS OF A FUNCTION CAN BE OBJECTS OF ANY TYPE, EVEN FUNCTIONS! CONSIDER THE 
+NEXT EXAMPLE:
+
+	test <- function(n, myfun) {
+		u = runif(n)
+		mp = myfun(u)
+		return(mp)
+}
+
+	test(10,myfun=sin)
+	
+	-OR-
+	
+	test(10,sin)
+
+
+9.4) CONSIDER THE NEXT EXAMPLE:
+
+	func <- function(x) {
+		return((x-2)^2)
+	}
+	
+	func(-2)
+	curve(func,-4,8)  # We pass the function to curve
+	
+	grid <- seq(-10,10,by=.1) 
+
+func(grid) 
+
+
+9.4) NOTE THAT WE CAN DO COMPOSITE FUNCTIONS ALSO. THERE IS AN OPTIMIZE FUNCTION IN R THAT 
+ALLOWS US TO FIND LOCAL MAXIMA AND MINIMA ON A GIVEN INTERVAL ASSUMING CONTINUITY.
+
+	plot(grid,func(grid)) 
+	
+	optimize(f=func,interval=c(-10,10))
+
+
+9.5) WHEN WRITING FUNCTIONS IN R, A FUNCTION ARGUMENT CAN BE DEFINED AS AN EXPRESSION 
+LIKE AS IN THE FOLLOWING FUNCTION:
+
+	myf <- function(x, nc = length(x)) {
+		rest of the function
+	}
+
+9.6) SUCH ARGUMENTS OF A FUNCTION ARE NOT EVALUATED UNTIL NEEDED. CONSIDER THE FOLLOWING 
+EXAMPLES.
+
+	myf <- function(x, nc = length(x)) {
+	  x = c(x, x)
+	  print(nc)
+	}
+	
+	xin <- 1:10
+	
+	myf(xin)
+
+PROBLEM 10) FUNCTION DEVELOPMENT EXAMPLE. THIS EXERCISES BUILDS A FUNCTION IN SEVERAL 
+STEPS. IT IS IMPORTANT TO UNDERSTAND WHAT EACH STEP ADDS TO THE OVER ALL FUNCTION SO 
+WORK THROUGH THIS SLOWLY. THE PARETO DISTRIBUTION IS GIVEN BY THE FORMULA:
+
+ 
+
+Let's do some basic evaluations for some parameters. 
+
+	R. p=.50, alpha = 2.33, x(0) = 100
+	
+	100*(1-.5)^(-1/(2.33-1))
+	
+	Next, say I wanted to look at the 40th percentile 
+	p=.40, alpha = 2.33, x(0) = 100
+	
+	100*(1-.4)^(-1/(2.33-1))
+	
+	Next, I want to make alpha = 2.5, make x(0) = 90, and p = .92
+	
+	90*(1-.92)^(-1/(2.5-1))
+
+10.1) IT WOULD BE EASIER TO MAKE A FUNCTION OUT OF ALL OF THIS TO MAKE IT REUSABLE. 
+TRY THIS:
+
+	qpareto.1 <- function(p, exponent, threshold) {
+		q <- threshold*((1-p)^(-1/(exponent-1)))
+		return(q)
+	 }
+	
+	qpareto.1(p=0.5,exponent=2.33,threshold=100)
+	
+	qpareto.1(p=0.4,exponent=2.33,threshold=100)
+	
+	qpareto.1(p=0.92,exponent=2.5,threshold=90)
+
+
+COMPARE THIS TO THE ANSWERS WE OBTAINED PREVIOUSLY TO CONFIRM THAT WE HAVE THE SAME 
+RESULTS. NOTE THAT I COULD ALSO CALL THE FUNCTION LIKE THIS:
+
+qpareto.1(0.5,2.33,100)
+
+10.2) IF WE EXAMINE OTHER QUANTILE FUNCTIONS (E.G., QNORM), WE SEE THAT MOST OF THEM 
+TAKE AN ARGUMENT CALLED LOWER.TAIL, WHICH CONTROLS WHETHER P IS A PROBABILITY FROM THE 
+LOWER TAIL OR THE UPPER TAIL. 
+
+	qpareto.1 implicitly assumes that it's the lower tail, but let's add the ability to 
+	change this.
+	
+	qpareto.2 <- function(p,exponent,threshold, lower.tail=TRUE) {
+	  if(lower.tail==FALSE) {
+		 p <- 1-p
+	  }
+		 q <- threshold*((1-p)^(-1/(exponent-1)))
+		return(q)
+	}
+
+10.3) NEXT RUN THROUGH THESE EXAMPLES TO MAKE SURE THE RESULTS LOOK OKAY.
+
+	qpareto.2(0.5,2.33,100,TRUE)
+	
+	qpareto.2(0.5,2.33,100)
+	
+	qpareto.2(0.92,2.5,90)
+	
+	qpareto.2(0.5,2.33,100,FALSE)
+	
+	qpareto.2(0.92,2.5,90,FALSE)
+
+
+10.4) BUT NOTICE THAT THE ABOVE VERSION OF THIS FUNCTION IS EQUIVALENT TO THE FOLLOWING. 
+BASICALLY WE SEE THAT WE CAN REPLACE SOME OF THE LOGIC WITH A PRE-EXISTING FUNCTION. 
+VERIFY THAT IT IS EQUIAVALENT BY RE-RUNNING THE PREVIOUS EXAMPLES.
+
+	qpareto.3 <- function(p,exponent,threshold,lower.tail=TRUE){
+	  if(lower.tail==FALSE) {
+	  p <- 1-p
+	}
+	  q <- qpareto.1(p, exponent, threshold)
+	  return(q)
+	}
+	
+When R tries to execute this, it will look for a function named qpareto.1 in the workspace. 
+If we have already defined such a function, then R will execute it, with the arguments we 
+have provided, and q will become whatever is returned by qpareto.1.
+
+If qpareto.1 changes, then the behavior of qpareto.3 will change with
+it, without our having to redefine qpareto.3
+
+It means that we can take our programming problem and sub-divide it into smaller tasks 
+efficiently. If there is a mistake in writing qpareto.1, when I fix it, qpareto.3 
+automatically gets fixed as well
+
+We can take this a step further. It might be good to put in some logic that tests the 
+legality of the arguments. As an example for the Pareto quantile function, p must be in 
+[0; 1], the exponent must be at least 1, and the threshold x0 must be positive, or else 
+the mathematical function just doesn't make sense. Here is how to check all these 
+requirements:
+
+10.5) Define a function in terms of the previously defined functions:
+
+	qpareto.4 <- function(p,exponent,threshold,lower.tail=TRUE){
+	   stopifnot(p >= 0, p <= 1, exponent > 1, threshold > 0)
+	   q <- qpareto.3(p,exponent,threshold,lower.tail)
+	   return(q)
+	}
+
+qpareto.4(0.5,2.33,100,TRUE)
+
+qpareto.4(0.92,2.5,90,FALSE)
+
+qpareto.4(1.92,2.5,90,FALSE)
+
+qpareto.4(-0.02,2.5,90,FALSE) # should produce an error
+
+qpareto.4(0.92,0.5,90,FALSE)  # should produce an error
+
+qpareto.4(0.92,2.5,-1,FALSE)  # Should produce an error
+
+
+BIOS 560R FUNCTIONS DEBUGGING LAB
+
+PROBLEM 1) CREATE THE FOLLOWING FUNCTION AND INSERT CAT STATEMENTS WHERE APPROPRIATE AS 
+A FORM OF BASIC DEBUGGING. 
+
+my.func = function(x,y) {   
+     y = log(y) 
+     z = sqrt(x + y)    
+     return(z)
+}
+
+1.1) RUN THIS FUNCTION USING THE FOLLOWING CALLING SEQUENCE
+	
+	my.func(2,3)
+	
+	my.func(2,-3)
+	
+	my.func(2,"3")
+	
+	my.func(0.5,0.5)
+
+1.2) INSERT CAT STATEMENTS TO DETERMINE WHERE AND WHY THE ERRORS ARE HAPPENING. HERE ARE 
+SOME SUGGESTIONS:
+
+	my.func = function(x,y) {  
+		 cat("Entering function \n")
+		 cat("x is",x,"y is",y,"\n")
+		 y = log(y) 
+		 cat("After log statement y is ",y,"\n")
+		 z = sqrt(x + y)  
+		 cat("after sqrt: z is",x,"\n")  
+		 return(z)
+	}
+
+
+1.3) INSERT SOME ARGUMENT CHECKING STATEMENTS TO VALIDATE THE INPUT TO THE FUNCTION. 
+THERE ARE MANY WAYS TO DO THIS BUT USING FUNCTIONS FROM THE "IS." FAMILY IS USEFUL. THE 
+STOP FUNCTION HALTS ANY FURTHER PROGRESS IF IT IS INVOKED. YOU COULD USE WARNING()INSTEAD.
+
+1.4) THIS VERSION OF THE FUNCTION WILL STOP IF ONE OR BOTH OF THE INPUT ARGUMENTS ARE 
+NOT NUMERIC.
+
+	my.func = function(x,y) {  
+	  if (!is.numeric(x) || !is.numeric(y) ) { 
+		  stop("Check your input")  
+	  }
+	
+	  cat("Entering function \n")
+	  cat("x is",x,"y is",y,"\n")
+	  y = log(y) 
+	  cat("After log statement y is ",y,"\n")
+	  z = sqrt(x + y)  
+	  cat("after sqrt: z is",x,"\n")  
+	  return(z)
+	}
+
+	my.func(2,3)
+	
+	my.func(2,-3)
+	
+	my.func(2,"3")
+	
+	my.func(0.5,0.5)
+
+
+
+1.5) THIS VERSION WILL ISSUE A WARNING IF ONE OR BOTH OF THE INPUT ARGUMENTS ARE NOT 
+NUMERIC. HOWEVER, IT WILL CONTINUE TO EXECUTE. 
+
+	my.func = function(x,y) {  
+	  if (!is.numeric(x) || !is.numeric(y) ) { 
+		  warning("Check your input")  
+	  }
+	
+	  cat("Entering function \n")
+	  cat("x is",x,"y is",y,"\n")
+	  y = log(y) 
+	  cat("After log statement y is ",y,"\n")
+	  z = sqrt(x + y)  
+	  cat("after sqrt: z is",x,"\n")  
+	  return(z)
+	}
+	
+	my.func(2,3)
+	
+	my.func(2,-3)
+	
+	my.func(2,"3")
+	
+	my.func(0.5,0.5)
+
+
+1.6) ADD ADDITIONAL ERROR CHECKING TO MAKE THE FUNCTION AS "BULLETPROOF" AS POSSIBLE.
+
+	my.func = function(x,y) {  
+	  if (!is.numeric(x) || !is.numeric(y) ) { 
+		  stop("Check your input")  
+	  }
+	
+	  cat("Entering function \n")
+	  cat("x is",x,"y is",y,"\n")
+	  
+	  if (y < 0) {
+	   stop("y is negative: cant get log of a negative number")
+	  } else {
+		y = log(y)
+	  } 
+	  cat("After log statement y is ",y,"\n")
+	
+	  if ( sum(x,y) < 0 ) {
+	   stop("Sum of x and y is negative: cant take the sqrt")
+	  } else {
+		z = sqrt(x + y) 
+	  } 
+	  cat("after sqrt: z is",x,"\n")  
+	  return(z)
+	}
+	
+	my.func(2,3)
+	
+	my.func(2,-3)
+	
+	my.func(2,"3")
+	
+	my.func(0.5,0.5)
+
+
+PROBLEM 2) THIS EXERCISE IS TO INVESTIGATE WHAT HAPPENS WHEN YOU CALL FUNCTIONS FROM 
+WITHIN FUNCTIONS AND THINGS GO WRONG. THIS IS A COMMON OCCURRENCE AND YOU NEED TO KNOW 
+HOW TO DEBUG SUCH SITUATIONS. 
+
+	foo <- function(x) { 
+		print(1)
+		bar(2) 
+	}
+	
+	bar <- function(x) { 
+		x + some.nonexistent.variable 
+	}
+
+So call foo(2). We'll get an error.
+
+foo(2)
+[1] 1
+Error in bar(2) : object 'some.nonexistent.variable' not found
+
+2.1) SO NEXT CALL THE TRACEBACK() FUNCTION TO SEE "THE STACK" OF FUNCTION CALLS THAT 
+LED TO THE ERROR.
+
+traceback()
+2: bar(2) at #3
+1: foo(2)
+
+So we see that the problem happened in function "Bar" called at line #3 from function 
+foo(). We already know that the reason that "bar" failed was because of the absence of 
+"some.nonexistent.variable".
+
+
+2.2) NEXT WE LOOK AT A MORE INVOLVED EXAMPLE WHEREIN WE CALL A FUNCTION FROM WITHIN A 
+FUNCTION WITHIN ANOTHER FUNCTION
+
+Function f calls g which calls h
+
+
+f = function(x) {
+  r = x - g(x)
+  r
+}
+
+g = function(y) {
+  r = y * h(y)
+  r
+}
+
+h = function(x) {
+  r = log(x) 
+  if(r < 10) 
+     r^2
+  else
+     r^3
+}
+
+f(2)    # Run it on a single value to confirm that it works
+
+
+f(-1)  3 run it with a value of -1. Where is the error coming from ? 
+
+Error in if (r < 10) r^2 else r^3 : missing value where TRUE/FALSE needed In addition: 
+Warning message:
+In log(z) : NaNs produced
+
+2.3) ISSUE THE TRACEBACK COMMAND TO FIND OUT WHERE THE PROBLEMS ARE:
+
+traceback()
+
+3: h1(y) at #2   # Check out line #2 of function h. 
+2: g1(x) at #2
+1: f1(-1)
+
+
+PROBLEM 3.0) LET'S CHECK OUT THE DEBUG FUNCTION, WHICH IS QUITE POWERFUL. FIRST WE'LL 
+CREATE A FUNCTION TO DEBUG. THIS COMPUTES THE SUM OF SQUARES FOR A VECTOR AND A GIVEN 
+VALUE FOR MU.
+
+
+SS = function(mu, x) {    # Compute Sum of Squares
+	d = x - mu
+	d2 = d^2
+	ss = sum(d2)
+	ss
+}
+
+# Set the seed so that the results are reproducible
+
+
+set.seed(100)
+
+x = rnorm(100)
+
+SS(1,x)
+[1] 202.5615
+
+PROBLEM 3.1) NOW LET'S DEBUG THE FUNCTION AND "STEP INTO IT":
+
+set.seed(100)
+
+X = rnorm(100)
+
+debug(SS)
+
+SS(1,x)
+debugging in: SS(1, x)
+debug at #1: {
+    d <- x - mu
+    d2 <- d^2
+    ss <- sum(d2)
+    ss
+}
+
+Browse[2]>
+
+3.2) FROM HERE THERE ARE VARIOUS COMMANDS WE CAN USE TO INSPECT VARIABLES AS THE PROGRAM 
+IS EXECUTING.  YOU CAN ALSO USE EXISTING BULTIN R FUNCTIONS TO HELP YOU EXAMINE DATA.
+
+
+Browse[2]> n              # "n" moves us to the next line
+debug at #2: d = x – mu
+
+Browse[2]> n
+debug at #3: d2 = d^2
+
+Browse[2]> ls()      	# ls() shows us the environment
+[1] "d"  "mu" "x" 
+
+Browse[2]> length(d)    # Get the length of "d"
+[1] 100
+
+Browse[2]> mu   # What is the value of "mu" at this point
+[1] 1
+
+Browse[2]> mu = 2       # Set mu to be 2
+
+Browse[2]> c		# "c" will finish the function call
+exiting from: SS(1, X)
+[1] 202.5615
+
+3.3) LET'S REPEAT THAT EXCEPT WE WILL ENTER DIFFERENT COMMANDS NOW TO BROADEN OUR 
+KNOWLEDGE OF WHAT WE CAN ACCOMPLISH AT THE DEBUG PROMPT.
+
+set.seed(100)
+
+X = rnorm(100)
+
+debug(SS)
+
+SS(1,x)
+debugging in: SS(1, x)
+debug at #1: {
+    d <- x - mu
+    d2 <- d^2
+    ss <- sum(d2)
+    ss
+}
+
+
+Browse[2]> d[1]
+[1] -1.502192
+
+Browse[2]> n
+debug at #4: ss <- sum(d2)
+
+Browse[2]> ls()
+[1] "d"  "d2" "mu" "x" 
+
+Browse[2]> hist(d2)  # Can do this on the fly 
+
+Browse[2]> n
+debug at #5: ss
+
+Browse[2]> ls()
+[1] "d"  "d2" "mu" "ss" "x" 
+
+Browse[2]> length(ss)
+[1] 1
+
+Browse[2]> ss
+
+Browse[2]> yy = x ^2   # Create a New Object
+
+Browse[2]> yy[1]
+[1] 0.2521972
+
+Browse[2]> where		# Where are we ? Oh yea in SS
+where 1: SS(1, x)
+
+Browse[2]> c				# Continue without stopping
+
+exiting from: SS(1, x)
+[1] 202.5615
+
+> undebug(SS) 		# Turns off debugging
+
+
+PROBLEM 4.0) YOU CAN ALSO USE THE "DEBUGONCE()" FUNCTION THAT WILL ACTIVATE DEBUGGING 
+FOR A FUNCTION ONLY ONE TIME THROUGH. LET'S TAKE A LOOK AGAIN AT OUR 3 FUNCTIONS FROM 
+BEFORE. LET'S DEBUG F AND, WHILE WE ARE AT IT, G AND H.
+
+WE WILL NEED TO INFORM R THAT WE INTEND TO DEBUG ALL THREE FUNCTIONS SO WE COULD DO THIS:
+
+debugonce(f)
+
+debugonce(g)
+
+debugonce(h)
+
+f = function(x) {
+  r = x - g(x)
+  r
+}
+
+g = function(y) {
+  r = y * h(y)
+  r
+}
+
+h = function(x) {
+  r = log(x) 
+  if(r < 10) 
+     r^2
+  else
+     r^3
+}
+
+4.1) NOW LET'S STEP THROUGH THESE FUNCTIONS:
+
+
+f(-1)
+debugging in: f(-1)
+debug at #1: {
+    r = x - g(x)
+    r
+}
+
+Browse[2]> where   # Tells us where we are
+where 1: f(-1)
+
+Browse[2]> n
+debug at #2: r = x - g(x)
+
+Browse[2]> n 		# Note we are "stepping into g"
+debugging in: g(x)
+debug at #1: {
+    r = y * h(y)
+    r
+}
+
+Browse[3]> n
+debug at #2: r = y * h(y)
+
+Browse[3]> n		# Note we are "stepping into h"
+debugging in: h(y)
+debug at #1: {
+    r = log(x)
+    if (r < 10) 
+        r^2
+    else r^3
+}
+
+Browse[4]> n
+debug at #2: r = log(x)
+
+Browse[4]> n
+debug at #3: if (r < 10) r^2 else r^3
+
+Browse[4]> n
+
+Error in if (r < 10) r^2 else r^3 : missing value where TRUE/FALSE needed
+In addition: Warning message:
+In log(x) : NaNs produced
+
+
+PROBLEM 5.0) LET'S USE THE TRACE FUNCTION TO "PLANT" A TRACE COMMAND INTO THE H FUNCTION 
+THAT WILL BE TRIGGERED IF ANY NAN VALUES ARE GENERATED. LET'S STICK WITH THE SAME THREE 
+FUNCTIONS (F,G, AND H) THAT WE HAVE DEFINED PREVIOUSLY.
+
+Use the "trick" to list the statements in h so we'll know where to insert the trace. In 
+this case it looks like after statement 2. 
+
+> as.list(body(h))
+[[1]]
+`{`
+
+[[2]]
+r = log(x)
+
+[[3]]
+if (r < 10) r^2 else r^3
+
+5.1) Let's now issue the trace command to insert the trace:
+
+trace("h", quote(if(any(is.nan(r))) {browser() }), at=3, print=F)
+
+> body(h)
+
+{
+    r = log(x)
+    {
+        .doTrace(if (any(is.nan(r))) {
+            browser()
+        })
+        if (r < 10) 
+            r^2
+        else r^3
+    }
+}
+
+5.2) LET'S NOW RERUN THE CALL OF FUNCTION F. THIS SHOULD PROVOKE A CALL TO THE BROWSER 
+SINCE WE ALREADY KNOW THAT THIS F(-1) WILL GENERATE PROBLEMS WITH THE LOG FUNCTION IN THE 
+H FUNCTION:
+
+> f(-1)
+Called from: eval(expr, envir, enclos)
+
+# Issue the "where" command to see where we are:
+
+Browse[1]> where
+where 1: eval(expr, envir, enclos)
+where 2: eval(expr, p)
+where 3: eval.parent(exprObj)
+where 4: .doTrace(if (any(is.nan(r))) {
+    browser()
+})
+where 5 at #2: h(y)
+where 6 at #2: g(x)
+where 7: f(-1)
+
+# Let's proceed to the next line:
+
+Browse[1]> n
+debug: if (r < 10) r^2 else r^3
+
+
+
+# Let's see the variables in the environment
+
+Browse[2]> ls()
+[1] "r" "x"
+Warning message:
+In log(x) : NaNs produced
+
+# Okay we see that r is a NaN
+
+Browse[2]> r
+[1] NaN
+
+# Let's avoid certain destruction by setting r to a value
+
+Browse[2]> r = 2
+
+# So now we finish the function
+
+Browse[2]> c
+[1] 3
+
+# Let's remove the tracing from function h
+
+untrace(h)
+
+body(h)
+{
+    r = log(x)
+    if (r < 10) 
+        r^2
+    else r^3
+}
+
+

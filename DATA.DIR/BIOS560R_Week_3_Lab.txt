@@ -1,0 +1,855 @@
+BIOS560R WEEK #3 LAB – LISTS, DATAFRAMES AND PROGRAMMING CONSTRUCTS
+
+
+PROBLEM 1) GIVEN THE FOLLOWING STRING USE THE STRPLIT FUNCTION TO SEPARATE IT USING 
+SPACE AS A DELIMITER. STORE THE RESULTS INTO A VARIABLE CALLED MY.S
+
+	my.string = c("This is the first string", 
+				  "And here is the second one")
+	
+	my.s = strsplit(my.string,"")
+
+1.1) HOW MANY ELEMENTS ARE THERE IN THE RESULTING LIST ? USE THE LAPPLY COMMAND
+
+	lapply(my.s, length)
+
+1.2) Use the names function to give the elements meaningful names:
+
+	names(my.s) = c("S1","S2")
+
+1.3) Use the single bracket and double bracket notation to access the 1st, 3rd, and 
+5th sub-element of the first element.
+
+	my.s[[1]][1]
+	
+	my.s[[1]][3]
+
+	my.s[[1]][5]
+
+PROBLEM 2.0) IMAGINE THAT YOU WISH TO CREATE A LIST TO STORE INFORMATION ON AN 
+EMPLOYEE: NAME, AGE, SOCIAL SECURITY NUMBER, GENDER, AND SALARY. CREATE THIS LIST 
+STRUCTURE WITH SOME EXAMPLE DATA FOR AN EXAMPLE EMPLOYEE: 
+
+	emp1 = list(name = "John Doe", age=32, 
+				ssn="289-09-9890", gender = "m", salary = 48000)
+
+2.1) Use the sapply command to determine what the class of each element is 
+
+	sapply(emp1, class)
+
+
+2.2) Use the sapply command to print only the numeric elements. Ignore the non numeric 
+elements.
+
+	sapply(emp1, function(x) { if (is.numeric(x)) print(x)})
+
+2.3) Change the name of the "gender" element to "sex". Do this without recreating the 
+list.
+
+	names(emp1)[4] = "sex"
+	
+	# -OR-
+	
+	my.names = names(emp1)
+	
+	my.names[4] = "sex"
+	
+	names(emp1) = my.names
+
+
+2.4) Use the unlist function to create a vector called my.vec that contains the elements 
+of emp1
+
+	my.vec = unlist(emp1)
+
+2.5) Write a for-loop to print out each element of the list. Here is what the enclosing 
+for-loop might look like:
+
+
+	for (ii in 1:length(emp1)) {
+		 cat(emp1[[ii]],"\n")
+	}
+
+
+PROBLEM 3) CREATE THE FAMILY DATA LISTS AS MENTIONED IN THE PRESENTATION. ALSO CREATE 
+THE GENEALOGY LIST TO CONTAIN THEM. YOU WILL HAVE THREE SUB LISTS AS ELEMENTS OF 
+GENEALOGY. VERIFY THIS BEFORE MOVING FORWARD WITH THE OTHER EXERCISES:
+
+	Family = list(husband="Fred", 
+				  wife="Wilma", num.of.children = 3, 
+				  child.ages=c(4,7,9))
+
+	Genealogy = list()
+	
+	Genealogy[[1]] = Family
+	
+	Genealogy[[2]] = list(husband="Louis", wife="Sue", 
+					 num.of.children=2, child.ages=c(3,5))
+	
+	Genealogy[[3]] = list(husband="Barney",wife="Betty",
+						  num.of.children=1,child.ages=c(4))
+
+3.1) Now create reasonable names for the elements such as F1, F2, F3
+
+	names(Genealogy) = c("F1","F2","F3")
+
+3.2) What is the value of the second sub element of element 2? More importantly what is 
+the expression you would type to get this information? 
+
+	Genealogy[[2]][[2]]
+	
+	# -OR-
+	
+	Genealogy$F2$wife
+
+3.3) What would be the sum of all the vector components found in the 4th sub element of 
+the second sub element ? What is the expression you would use to get this information ? 
+
+	sum(Genealogy$F2$child.ages)
+
+3.4) Write a for-loop or use the lapply command to extract just the number of children 
+for each person. This is a bit more complex because each element is also a list itself. 
+Use the double bracket notation to first access the element value and then the dollar 
+notation to get the value of num.of.children
+
+	for (ii in 1:length(Genealogy)) {
+	   cat(Genealogy[[ii]]$num.of.children,"\n")
+	}
+
+3.5) Run the following code to create a list of random numbers:
+
+	dat = NULL
+	for (i in 1:3) {
+	   dat[[i]] = rnorm(runif(1)*1000, mean=i, sd=i)
+	}
+	names(dat) = paste("dat", 1:3)
+
+3.6) Use the lapply function to obtain the length, mean, and variance of all elements 
+in the list dat.
+
+	lapply(dat,function(x) {return(c(length(x), mean(x), var(x)))})
+	
+	# -OR –
+	
+	my.func <- function(x) {
+		retlist = NULL
+		retlist$length = length(x)
+		retlist$mean = mean(x)
+		retlist$var = var(x)
+		return(retlist)
+	}
+	
+	lapply(dat, my.func)
+
+DATA FRAME EXERCISES
+
+
+Problem 4.0) Please enter the following vectors:
+
+	names = c("P1","P2","P3","P4","P5")
+	temp = c(98.2,101.3,97.2,100.2,98.5)
+	pulse = c(66,72,83,85,90)
+	gender = c("M","F","M","M","F")
+
+4.1 Create a data frame called my_df that has as columns the above vectors. 
+
+	my_df = data.frame(names, temp, pulse, gender)
+
+How many rows does it have ? 
+
+	nrow(my_df)
+
+How many columns does it have ?
+
+	ncol(my_df)
+
+What are the names of the columns ?
+
+	names(my_df)
+
+4.2	 Determine the class of each column/variable
+
+	sapply(my_df, class)
+	
+	#-OR YOU COULD DO THIS THE HARD WAY –
+	
+	for (ii in 1:ncol(my_df)) {
+		print(class(my_df[,ii]))
+	}
+
+
+4.3 Change the rownames of the dataframe to be P1, P2, .. P5
+
+	rownames(my_df) = paste("P",1:5,sep="")
+
+PROBLEM 5.0: ADD THE FOLLOWING VECTOR AS A COLUMN ON TO THE MY_DF DATA FRAME
+
+	smoker = c("Y","N","N","Y","N")
+	
+	cbind(my_df,smoker)
+  
+
+5.1 Given the following two data frames use the rbind command to create a combined data 
+frame called new_df
+
+	df1 = data.frame(id=c('P1','P2','P3'),m1=c(12.34,34.12,11.12),
+					 m2=c(90.32,23.90,78.23))
+	
+	df2 = data.frame(id=c('P4','P5','P6'),m1=c(12.34,43.12,12.11),
+					 m2=c(90.32,23.90,78.23))
+	
+	new_df = rbind(df1, df2)
+
+5.2 Let's merge two data frames in this exercise. Given the following two data frames, 
+merge them into a single data frame. As you might suspect you would use the merge 
+command.
+
+	tb1 = data.frame(indiv_id = 1:4, snp1 = c(1,1,0,1), 
+					 snp2 = c(1,1,0,0)) 
+	
+	tb2 = data.frame(indiv_id = c(1,3,4,6), 
+					 cov1 = c(1.14,4.50,0.80,1.39), 
+					 cov2 = c(74.6,79.4,48.2,68.1))
+	
+	merge(tb1, tb2, by="indiv_id", all=TRUE)
+
+
+5.3 What happens if use this command to merge ? What effect does the all.X have ? What 
+if you used "all.y=F" instead ?
+
+merge(tb1, tb2, by="indiv_id",all.x=F)
+
+5.4 Given the following two data frames, merge them. Note that they don't have a common 
+field name so you will have to use the by.x and by.y arguments to tell R what column 
+names you will be merging on.
+
+	tb1 = data.frame(indiv_id = 1:4, snp1 = c(1,1,0,1), 
+					 snp2 = c(1,1,0,0))
+	
+	tb2 = data.frame(patient_id = c(1,3,4,6), 
+					 cov1 = c(1.14,4.50,0.80,1.39), 
+					 cov2 = c(74.6,79.4,48.2,68.1))
+	
+	merge(tb1, tb2, by.x="indiv_id", by.y="patient_id", all=T)
+
+PROBLEM 6.0) WITH RESPECT TO THE MTCARS DATA FRAME, WHICH IS BUILT IN TO R, LET'S DO 
+SOME SUBSETTING TO EXTRACT DATA. EXTRACT THE 11TH COLUMN
+
+	mtcars[,11]
+
+Extract the 2nd through 4th columns
+
+	mtcars[,2:4]
+
+Extract the 1st through 10th rows and the 5th though 11th columns
+
+	mtcars[1:10,5:11]
+
+Extract all columns except the 3rd, 5th, and 7th 
+
+	mtcars[,c(-3,-5,-7)] 
+
+PROBLEM 7.0 LET'S EXTRACT SOME DATA BASED ON LOGICAL CONDITIONS. EXTRACT ALL RECORDS FOR 
+WHICH THE TRANSMISSION TYPE (INDICATED BY COLUMN AM) IS EQUAL TO 0
+
+	mtcars[mtcars$am == 0, ]
+
+7.1) Extract all records / rows where the MPG is greater than or equal to 30
+	
+	mtcars[mtcars$mpg >= 30.0,]
+                
+7.2) For columns 2 through 6 extract all records / rows where the MPG is >= 30.
+
+	mtcars[mtcars$mpg >= 30.0,2:6]
+
+7.3) Extract all records for which MPG is >= 30 AND the number of cylinders are less 
+than 6
+
+	mtcars[mtcars$mpg >= 30.0 & mtcars$cyl < 6,]
+
+PROBLEM 8.0 LET'S RECODE SOME VARIABLES. LET'S TAKE THE "AM" COLUMN AND MAKE THAT MORE 
+UNDERSTANDABLE.
+
+	mtcars$am = factor(mtcars$am, labels=c("auto","manual"))
+
+8.1) Use the table command to summarize the counts of automatic transmissions vs cylinder 
+type:
+
+	table(mtcars$am, mtcars$cyl)
+
+8.2) Use the split command to “split up” the mtcars data frame based on the number of 
+cylinders:
+
+	my.split  = split(mtcars, mtcars$cyl)
+
+8.3) Do you remember how to use the lapply command to list only the first 5 lines of each 
+cylinder group ?
+
+	lapply(my.split, head)
+
+8.4) Can you summarize the mean MPG per cylinder group ?
+
+	lapply(my.split, function(x) mean(x$mpg))
+
+8.5) How would you write this using a single line ?
+
+	lapply( split(mtcars, mtcars$cyl), function(x) mean(x$mpg))
+
+8.6) How would you determine the means of the columns MPG, DISP, HP, and WT ?
+
+	colMeans(mtcars[,c("mpg","disp","hp","wt")])
+	
+	sapply(mtcars[,c("mpg","disp","hp","wt")], mean)
+	
+	tapply(mtcars$mpg,mtcars$cyl,mean)
+
+PROBLEM 7.0) LET’S WORK WITH SOME MISSING VALUES.
+
+	data <- data.frame(x=c(1,2,3,4), 
+					   y=c(5, NA, 8,3),
+					   z=c("F","M","F","M"))
+
+7.1) Let’s find ways to detect the missing values. This will omit all the records with 
+missing values
+
+	na.omit(data)
+
+This will list only those cases / rows that don’t have missing values
+
+	complete.cases(data)
+
+This will count the number of cases (rows) with non-missing data:
+
+	sum(complete.cases(data))
+
+Use the bracket notation to list only those records that are complete
+
+	data[complete.cases(data),]
+
+
+PROBLEM 8.0) LET’S INVESTIGATE THE USE OF THE “ORDER” COMMAND, WHICH CAN BE USED TO SORT 
+A DATA FRAME. WITH RESPECT TO THE MTCARS DATASET LET’S SORT IT BY MPG. FIRST VERIFY WHAT 
+THE ORDER COMMAND GIVES YOU BY ITSELF:
+
+	order(mtcars$mpg)
+
+8.1) Next, use these values in the bracket notation to re-order (sort) the data frame 
+accordingly.
+
+	mtcars[order(mtcars$mpg),]
+
+8.2) Note that these are sorted from the lowest to the highest MPG value. How would we 
+reverse this ? That is, how would we sort it from highest to lowest ? 
+
+	mtcars[order(-mtcars$mpg),]
+
+8.3) Now, how would we sort the data frame first by MPG from lowest to highest and then by 
+WT from highest to lowest ? 
+
+	mtcars[order(mtcars$mpg,-mtcars$wt),]
+
+PROBLEM 9.0)  LET’S PLAY AROUND WITH THE SAMPLE COMMAND SOME.  REMEMBER THAT WE HAVE 
+32 ROWS IN OUR DATA FRAME. ( NROW(MTCARS) WILL PROVE THIS). SO NEXT WE WANT TO SAMPLE 
+10 RECORDS WITHOUT REPLACEMENT. THIS WILL ALLOW US TO AVOID DUPLICATES:
+
+	my.sample = sample(1:nrow(mtcars), 10, replace=FALSE)
+
+Then we use this information with the bracket notation to get the sample of 10. 
+
+	mtcars[my.sample,]
+
+
+PROBLEM 10.0) RESHAPING DATA FRAMES. CONSIDER THE FOLLOWING DATA FRAME:
+
+	mydata = data.frame(grp1=c(12,15,19,22,25),
+						grp2=c(18,12,42,29,44),
+						grp3=c( 8,17,22,19,31))
+
+Recall that for some statistical analyses it is better (or required) to “Stack” this 
+data into a single column where the values for all groups are in that column. To keep 
+track of which group the values correspond we would also need a second column to tell 
+us what group a given value corresponds to.
+
+	mydata
+	 
+	my.stack = stack(mydata)
+	
+	head(my.stack)
+  
+10.1) When referring to a dataframe, describe what is meant by a “long” format vs a 
+“wide” format
+
+10.2) Execute the following commands to create a data frame. Note that you will be 
+creating to lists and combining them via the rbind command to create a dataframe:
+
+	row1 = list(patient="John Smith",visit=1,age=32,
+				weight=170,height=62)
+	
+	row2 = list(patient="Mary Smith",visit=1,age=31,
+				weight=130,height=52)
+	
+	my.test.df = data.frame(rbind(row1,row2))
+				 rownames(my.test.df) = NULL
+
+10.3) Is my.test.df in a wide or a long format ? If it is in a wide format how would you 
+convert it to a long format ? Note that you might have to install the reshape package.
+To do this example you will have to first install the "reshape" package. Do:
+
+    install.package("reshape",dependencies=TRUE)
+	library(reshape)
+	melt(my.test.df, id.var = "patient")
+
+
+PROGRAMMING CONSTRUCTS
+
+PROBLEM 11.0) "IF" IS AN EASY STRUCTURE. IT TESTS FOR A CONDITIONS AND, BASED ON THAT, 
+EXECUTES A SPECIFIC BLOCK OF CODE. 
+
+	some.num = 3               
+	
+	if (some.num < 10) {       # The simple if statement
+	   print("Less than 10")
+	}
+
+11.1)
+
+	if (some.num < 2) {        # The simple if/else statement
+		 print("Less than 2")
+	} else {
+		 print("Greater than 2")
+	}
+
+11.2)
+
+	if (some.num < 3) {        # A more involved if statement
+		 print("Less than 3")
+	} else if (some.num > 3) {
+		 print("Less than 3")
+	} else {
+		 print("Must be equal to 3")
+	}
+
+
+11.3)  In this example we work through an example where we compute a tax rate based on 
+whether an organization is private or public.
+
+	base_price = 137.47
+	private = FALSE
+	public = TRUE
+	
+	if (private) {
+		price = base_price * 1.08
+	} else {
+		price = base_price * 1.04
+	}
+	print(round(price,2))
+
+11.4)  Sometimes the logical expression can get involved and complex. Work through this 
+example. Break the logical expression down to the most simple combinations to better 
+understand them.
+
+	x = 3; y = 40; flag1 = "Y"; flag2 = "N"
+	
+	if (x == 3 & flag1 == "Y") {
+	   print("Both are true")
+	}
+
+This second version is better since the parentheses take the guesswork out of what the 
+priority of evaluation is. 
+
+	if ((x == 3) & (flag1 == "Y")) {
+		 print("Both are true")
+	}
+
+11.5) Look at this example without parentheses. It is confusing and unclear. What is the 
+result of executing this statement ?
+
+	if ( x == 3 & flag1 == "N" & y == 40 & flag2=="N" ) {
+		print("Both are true")
+	}
+
+This is easier to read. What is the result of executing this statement ? 
+
+	if ( (x == 3 & flag1 == "Y") & ( y == 40 & flag2=="N" ) ) {
+		 print("Both are true")
+	}
+
+PROBLEM 12.0) TESTING FOR IDENTITY WITH IF STATEMENTS CAN BE ACCOMPLISHED SEVERAL WAYS 
+SUCH AS BY USING THE IDENTICAL FUNCTION. WHAT IS THE DIFFERENCE BETWEEN THE FOLLOWING 
+TWO STATEMENTS ? 
+
+	3 = 3
+	
+	3 == 3
+
+12.1) We can also check identity by using a function. You might see this in R code that 
+you download from the Internet.
+
+	x=4 ; y=5
+	
+	identical(x,y)
+	
+	if (identical(x,y)) {
+		   print("Equal")
+	} else {
+		  print("Not equal")
+	}
+
+12.2) In this next example we experiment with a method of error checking that is common. 
+We first check to see if we have numeric values to process and only then would we proceed 
+to check if the quantities / variables are identical.
+
+	x=4 ; y=5
+	
+	if (!is.numeric(x) & !is.numeric(y)) {
+	   stop("I need numeric values to do this")
+	} 
+	if (identical(x,y)) {
+		   print("Equal")
+	} else {
+		  print("Not equal")
+	}
+
+12.3)  Keep in mind that the identical function let's us do checking for vectors and 
+matrices. That is we aren't restricted to just single valued variables.
+
+	set.seed(123)
+	
+	x = rnorm(1000)
+	
+	set.seed(123)
+	
+	y = rnorm(1000)
+	
+	identical(x,y)
+	
+	if (identical(x,y)) {
+	   print("x and y are equal")
+	}
+
+
+12.4) Experiment with some of the utility functions
+
+	is.odd.number <- function(x) {
+		if (x %% 2 != 0) {
+		  return(TRUE)
+		} 
+		else {
+		  return(FALSE)
+		}
+	}
+	
+	is.odd.number(4)
+	
+	check.integer <- function(some.num) {
+		 if (some.num == round(some.num)) {
+			 return(TRUE)
+		 } else {
+			 return(FALSE)
+		 }
+	}
+	
+	check.integer(4.34)
+
+
+12.5) Let's look at a "real" example here. We have created a function that processes a 
+vector to compute its median. This will be different based on whether or not there are 
+an even number of elements or odd number of elements.
+
+	x=c(2,7,1,8,9)
+	med <- function(x) {
+	   even = (length(x) %% 2) == 0
+	   if (even) {   # If we have an EVEN number of elements
+		  my.mid = length(x)/2
+		  my.med = mean(sort(x)[c(my.mid,my.mid+1)])
+		}
+	   else {          # We have an ODD number of elements
+	
+		  my.med = sort(x)[ceiling(length(x)/2)]
+	  }
+	   return(my.med)
+	}
+	
+	med(x)
+
+PROBLEM 13.0) FOR LOOP EXERCISES. HERE WE EXPLORE SOME INSTRUCTIVE EXAMPLES. THE FOLLOWING 
+TWO ARE EQUIVALENT THOUGH THE FIRST FORM IS PREFERRED FOR READABILITY.
+
+	for (ii in 1:3) {
+		cat("ii is equal to ",ii,"\n")
+	}
+	
+	for (ii in 1:3) print(ii)
+
+13.1) If we are given a vector then how do we use a for loop to compute the sum of its 
+components ?
+
+	myvec = seq(1,10,by=2)
+	
+	myvec
+	
+	sum_x = 0
+	
+	for (var in myvec) {
+		sum_x = sum_x + var
+		cat("The current loop element is ",var,"\n")
+		cat("The cumulative total is",sum_x,"\n")
+	}
+
+13.2) Note that it is also common to use the length of the vector to set the upper limit 
+of the looping index.
+
+	mylist = seq(1,10,by=2)
+	sum_x = 0
+	
+	for (var in 1:length(mylist)) {    # Note we use the length function
+		sum_x = sum_x + var
+		cat("The current loop element is ",var,"\n")
+		cat("The cumulative total is",sum_x,"\n")
+	}
+
+13.3) How would you compute the factorial of a number ? For 
+example: 4! = 4 * 3 * 2 * 1 = 24
+
+	my.num = 4
+	my.nfac = 1
+	for (i in 1:my.num) {
+	  my.nfac = my.nfac * i
+	}
+
+print(my.nfac)
+
+13.4) How would you handle a vector if it contained missing values  ? Well first you might 
+use the "is.na()" function to assist in processing individual values. If you detect a 
+missing element then maybe you would like to terminate the loop.
+
+	my.vec = c(1,2,3,NA,5,6,7,8,9,10)
+	
+	for (ii in 1:length(my.vec)) {
+		if (is.na(my.vec[ii])) {
+		   break
+		}
+		cat("element is ",ii,"\n")
+	}
+
+13.5) Or maybe you would like to simply "skip over" the missing element and continue 
+processing the other non-missing elements. 
+
+	my.vec = c(1,2,3,NA,5,6,7,8,9,10)
+	
+	for (ii in 1:length(my.vec)) {
+		if (is.na(my.vec[ii])) {
+		   next
+		}
+		cat("element is ",ii,"\n")
+	}
+
+13.6) for loops that involve other programming structures are very common. In this example 
+we use a for loop to work through two vectors to determine the sign of the respective 
+entries.
+
+	my.vec1 = rnorm(5); my.vec2 = rnorm(5)
+	
+	for (ii in 1:length(my.vec1)) {
+	
+	  if( my.vec1[ii] < 0 & my.vec2[ii] < 0 ) {
+		   cat("For index",ii,"both entries are negative","\n")
+	  } else if ( my.vec1[ii] >= 0 && my.vec2[ii] >= 0 ) {
+			cat("For index",ii,"both entries are positive","\n")
+	  } else {
+			cat("For index",ii,"the two entries differ in sign","\n")
+		  }
+	} # End for
+
+13.7) When processing matrices and data frames with for-loops you could use a double 
+for-loop construct. This loop checks each element of a matrix to see if it is even or 
+odd. This can be tedious to enter at the command line so you are better off entering 
+it in an editor window or in the source window of R Studio.
+
+	( simple.mat = matrix(1:9,3,3) )
+	
+	num.of.rows = nrow(simple.mat)    # 3 rows
+	num.of.cols = ncol(simple.mat)    # 3 columns
+	
+	for (ii in 1:num.of.rows) {
+	  for (kk in 1:num.of.cols) {
+		if (simple.mat[ii,kk] %% 2 == 0) {  
+	
+		  cat("Row",ii,"Column",kk,"is even",simple.mat[ii,kk],"\n")
+		} else {
+		  cat("Row",ii,"Column",kk,"is odd",simple.mat[ii,kk],"\n")
+		}
+	  }
+	}
+
+13.8) Note that this problem also has a vectorized solution that is shorter and more 
+efficient. 
+
+	simple.mat
+	
+	simple.mat %% 2 == 0    # Finds the even elements
+		  
+	simple.mat[simple.mat %% 2 == 0]
+
+
+13.9) Let's create a matrix of proportions based on an existing matrix. Here we will 
+divide each element but the sum of its respective column.
+
+	x = matrix(1:4,2,2)
+	temp = x
+	for (ii in 1:ncol(x)) {
+		for (jj in 1:nrow(x)) {
+			temp[jj,ii] = x[jj,ii]/sum(x[,ii])
+		}
+	}
+	temp
+
+PROBLEM 14.0) THE WHILE LOOP IS SIMILAR TO THE FOR-LOOP. IN FACT IT IS A GENERALIZATION 
+OF THE FOR-LOOP. USE THE WHILE-LOOP WHEN YOU NEED TO LOOP “WHILE” SOME VALUE IS SATISFIED. 
+
+	tea.temp = 115
+	while (tea.temp > 112) {
+		print(tea.temp)
+		tea.temp = tea.temp - 1
+	}
+	
+	print('The tea is now cool enough')
+
+14.1) This shows you how the for loop compares to the while loop:
+
+	sum = 0 
+	n = 1000
+	i = 1
+	while (i <= n) {
+		sum = sum + i
+		i = i + 1
+	}
+	
+	sum
+	
+	sum = 0
+	n = 1000
+	for (i in 1:n) {
+	   sum = sum + 1
+	}
+	
+	sum
+
+14.2) This example shows us how to read in input from a user. We ask them to provide a 
+guess the number we are thinking about (in this case it is 9).
+
+	my.answer = 0  # Initialize the answer
+	number.to.be.guessed = 9
+	
+	while ( my.answer != 9) {
+		 my.answer <- readline("Guess the number that I'm thinking about: ")
+		 if (my.answer == 9) {
+			print("You got it ")
+			break
+		 }
+	}
+
+14.3) This example also shows us how to read in input from a user. We ask them to provide 
+a guess the number we are thinking about (in this case it is 9). However, we limit the 
+number of guesses to 5. Run this code a couple of times. Intentionally guess the wrong 
+number 5 times to see how the code behaves.
+	
+	limit = 5
+	my.answer = 0  # Initialize the answer
+	number.to.be.guessed = 9
+	
+	while ( ( my.answer != 9) & ( limit  > 0) ) {
+		 my.answer <- readline("Guess the number that I'm thinking about: ")
+		 if (my.answer == 9) {
+			print("You got it ")
+			break
+		 }
+		 limit = limit - 1
+	}
+
+Problem 15.0) Here are some exercises using the switch statement. This statement is not 
+necessary as it can be replaced by an if statement. However, those who have experience 
+with the C programming language might like to use the switch statement.
+
+	x = 3
+	   
+	switch(x, 2+2, mean(1:10), rnorm(5)) 
+	
+	switch(2, 2+2, mean(1:10), rnorm(5)) 
+     
+15.1) A common use of switch is to branch according to the character value of one of the 
+arguments to a function.
+
+	centre <- function(x, type) {
+	  switch(type,
+			 mean = mean(x),
+			 median = median(x),
+			 trimmed = mean(x, trim = .1))
+	}
+	
+	x <- rcauchy(10)
+	
+	centre(x, "mean")
+	[1] 0.8760325
+	
+	centre(x, "median")
+	[1] 0.5360891
+	
+	centre(x, "trimmed")
+		 [1] 0.6086504
+
+
+lapply and sapply
+
+15.2) Create a list of four different score sets.
+
+	s1 = round(runif(26,52,101),0)
+	s2 = round(runif(18,59,98),0)
+	s3 = round(runif(32,71,93),0)
+	s4 = round(runif(15,70,100),0)
+	
+	mylist = list(s1=s1,s2=s2,s3=s3,s4=s4)
+
+15.3) Use the lapply function to determine the length of each list element
+
+     lapply(mylist, length)
+
+15.4) Use the sapply function to do the same
+
+	sapply(mylist, length)
+
+15.5) Write a for loop to do the same thing
+
+	for (ii in 1:length(mylist)) {
+	   cat(names(mylist)[ii]," = ",length(mylist[[ii]]),"\n")
+	}
+    
+
+15.6) Use the lapply function to determine the range of each list element
+
+	lapply(mylist, range)
+
+
+15.7) Use the sapply function to do the same:
+
+	sapply(mylist, range)
+
+
+15.8) Write a for loop to do the same thing
+
+	for (ii in 1:length(mylist)) {
+		 cat(range(mylist[[ii]]),"\n")
+	}
+
+OR if you wanted to return a matrix
+
+	mylength = length(mylist)
+	
+	mymat = matrix(rep(0,(mylength*2)),mylength,2)
+	
+	for (ii in 1:mylength) {
+		 mymat[ii,] = range(mylist[[ii]])
+	}
+	rownames(mymat) = names(mylist)
+	t(mymat)
+

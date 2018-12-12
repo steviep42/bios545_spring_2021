@@ -1,0 +1,338 @@
+BIOS560R WEEK #5 LABS – Data aggregation and Benchmarking
+
+--------------------------------------
+I. DATA AGGREGATION AND RESHAPING
+--------------------------------------
+
+I.1. TABLE FUNCTIONS
+
+FIRST TRANSFORM THE mtcars DATA, SO THAT THE TRANSMISSION TYPE IS MORE MEANINGFUL:
+      mtcars = transform(mtcars, am = factor(am,labels=c("Automatic","Manual")))
+
+(1) USE "table" FUNCTION TO SUMMARIZE CATEGORICAL VARIABLES.
+    
+    ONE DIMENSIONAL TABLE:
+
+      table(mtcars$cyl)
+      table(mtcars$am)
+    
+    HIGHER DIMENTIONAL TABLE
+
+      table(mtcars$cyl, mtcars$am)
+      table(mtcars$cyl, mtcars$am, mtcars$gear)
+
+    SUMMARY TABLES
+
+      summary(table(mtcars$cyl))
+      summary(table(mtcars$cyl, mtcars$am))
+      summary(table(mtcars$cyl, mtcars$am, mtcars$gear))
+
+(2) USE A COMBINATION OF "cut" AND "table" FUNCTIONS TO SUMMARIZE CONTINUOUS VARIABLES.
+
+    REPEAT THE EXAMPLE ON CLASS NOTE TO SUMMARIZE NUMBER OF CARS IN FOLLOWING HORSEPOWER
+    CATEGORY: <=100, (100, 150], (150, 200], >200
+    
+       hpbins=cut(mtcars$hp, c(0,100,150,200,1000), include.lowest=TRUE)
+       hpbins
+       table(hpbins)
+
+    SUMMARIZE NUMBER OF CARS IN HORSEPOWER CATEGORY, STRATIFY BY NUMBER OF CYLINDERS
+
+       table(hpbins, mtcars$cyl)
+     
+    USE SIMILAR TECHNIQUE TO SUMMARIZE NUMBER OF FLOWERS IN FOLLOWING PETAL WIDTH 
+    CATEGORY: <=0.2, (0.2, 0.5], (0.5,1], (1, 2], >2
+
+    SUMMARIZE NUMBER OF FLOWERS IN FOLLOWING PETAL WIDTH, STRATIFY BY SPECIES
+
+(3) TABLE MARGINS: USE THE MARGIN FUNCTIONS TO ADD MARGINS FOR A TABLE.
+    
+	tbl=table(mtcars$cyl, mtcars$am)
+	addmargins(tbl)
+    	prop.table(tbl)
+
+    
+I.2. THE APPLY FUNCTIONS. 
+WE WILL PRACTICE USING APPLY FUNCTIONS (APPLY, SAPPLY, LAPPLY, TAPPLY) INSTEAD OF 
+LOOPS TO DO DATA AGGREGATION.
+
+(1) USE "apply" ON MATRIX. 
+
+GENERATE A 1000 x 5 MATRIX OF RANDOM NUMBERS FROM N(1,1). 
+
+     X=matrix(rnorm(1000*5, mean=1, sd=1), ncol=5)
+
+COMPUTE THE MEAN and variance OF EACH ROW. VERIFY THAT THE VARIANCE OF ROWM IS ROUGHLY 0.2 (1/5). 
+
+     rowm=apply(X, 1, mean)
+     hist(rowm)
+     var(rowm)
+     rowv=apply(X, 1, var)
+
+STANDARDIZE EACH ROW BY ITS MEAN AND VARIANCE. 
+
+     X2=apply(X, 1, function(x) (x-mean(x))/sd(x))
+
+NOTICE THAT THE DIMENSION OF X2. THE ROWS AND COLUMNS ARE FLIPPED. 
+
+     dim(X2)
+     m1=apply(X2, 2, mean)
+     m2=apply(t(X2), 1, mean)
+     all(m2==m1)
+
+THE ABOVE STANDARDIZATION CAN BE DONE USING SWEEP FUNCTIONS:
+
+    rowm=apply(X, 1, mean)
+    rowsd=apply(X, 1, sd)
+    X3=sweep(X, 1, rowm, FUN="-")
+    X3=sweep(X3, 1, rowsd, FUN="/")
+    all(t(X2)==X3)  ## They give exactly the same results
+
+(2) USE "lapply" AND "sapply" 
+    
+THE EXAMPLE IN CLASS NOTES. GENERATE A LIST OF NORMAL RANDOM NUMBERS THEN OPERATE ON IT. 
+USE BOTH LAPPLY AND SAPPLY, AND PAY ATTENTION TO THE DIFFERENCE IN RESULTS. 
+
+    dat=list(dat1=rnorm(10, mean=1, sd=1), dat2=rnorm(10, mean=1, sd=1))
+    lapply(dat, mean)
+    sapply(dat, mean)
+
+    lapply(dat, function(x) (x-mean(x))/sd(x))
+    sapply(dat, function(x) (x-mean(x))/sd(x))
+
+
+NOTICE THAT THE CLASS OF "MTCARS" IS DATA.FRAME, WHICH IS A SPECIAL TYPE OF LIST. 
+
+    class(mtcars)
+    is.list(mtcars)
+
+LAPPLY AND SAPPLY FUNCTIONS CAN BE APPLIED TO DATA FRAME DIRECTLY. COMPUTE AVERAGE 
+mpg, hp and wt.
+
+     lapply(mtcars[c("mpg","hp", "wt")], mean)
+     sapply(mtcars[c("mpg","hp", "wt")], mean)
+
+PLOT HISTOGRAM OF THE DATA. IGNORE THE RETURN VALUES.
+
+     par(mfrow=c(1,3))
+     lapply(mtcars[c("mpg","hp", "wt")],hist)
+
+(3) USE "tapply"
+
+COMPUTE THE AVERAGE MPG FOR CARS, STRATIFY BY TRANSMISSION TYPE.
+
+     tapply(mtcars$mpg, mtcars$am, mean)
+
+SIMILARLY, COMPUTE THE AVERAGE MPG FOR CARS, STRATIFY BY CYLINDER (DIY).
+
+
+AVERAGE MPG FOR CARS, STRATIFY BY TRANSMISSION TYPE AND NUMBER OF CYLINDERS.
+
+     tapply(mtcars$mpg, list(mtcars$am,mtcars$cyl), mean)
+
+A SLIGHLY BIGGER ONE. COMPUTE THE AVERAGE MPG FOR CARS, STRATIFY BY HORSEPOWERS.
+THIS REQUIRES USING CUT FUNCTION FIRST, THEN TAPPLY.
+
+     hpbins=cut(mtcars$hp, c(0,100,150,200,1000), include.lowest=TRUE)
+     tapply(mtcars$mpg, hpbins, mean)
+
+BY TRANSMISSION AND HORSEPOWER. ONE CAN SEE UNDER THE SAME HP CATEGORY, MANUAL CARS
+HAVE BETTER FUEL ECONOMY.
+
+     tapply(mtcars$mpg, list(mtcars$am, hpbins), mean)
+
+
+I.3. by AND aggregate FUNCTIONS.
+
+COMPUTE THE AVERAGE MPG, STRATIFYING BY DIFFERENT FACTORS. THIS CAN BE DONE IN DIFFERENT WAYS.
+COMPARE THE RESULTS. 
+
+     by(mtcars$mpg, mtcars$am, mean)
+     aggregate(mtcars['mpg'],list(Transmission=mtcars$am),mean)
+     aggregate(mpg ~ am, mtcars, mean)
+     tapply(mtcars$mpg, mtcars$am, mean)
+
+     by(mtcars$mpg, list(mtcars$am,mtcars$cyl), mean)
+     aggregate(mtcars[c('mpg','hp')],list(Transmission = mtcars$am, Cylinders = mtcars$cyl),mean)
+     aggregate(mpg ~ am + cyl, mtcars, mean)
+     tapply(mtcars$mpg, list(mtcars$am,mtcars$cyl), mean)
+
+
+I.3. reshape PACKAGE.
+
+INSTALL AND LOAD IN THE RESHAPE PACKAGE.
+
+      install.packages("reshape")
+      library(reshape)
+      
+(1) TRY THE CLASS EXAMPLE. 
+
+FIRST CREATE A DATA FRAME OF FOUR ROWS. 
+
+      my.df = data.frame(id=paste("P",1:4,sep=""),
+        age=c(30.0,36.0,43.0,29.0),
+	  pulse=c(78.2,74.4,82.3,91.9),
+	  height=c(72,68,69,71),
+	  group=c("ctrl","ctrl","treat","treat"))
+
+      my.df
+      sapply(my.df,class)
+
+MELT THE DATA FRAME in different ways. Pay attention to the difference.
+
+     melt(my.df)
+     melt(my.df, id.vars="id")
+
+NOTICE THAT THE DATA FRAME HAS TO BE MELT BY "UNIQUE" IDENTIFIERS. 
+FOLLOWING STATEMENT WILL PRODUCE ERROR: 
+
+     melt(my.df, id.vars="group")
+     melt(my.df, id.vars="age")
+
+NOW CAST IN DIFFERENT WAYS. FIRST GET MEAN OF EACH GROUP.
+
+     my.melt=melt(my.df)
+     cast(my.melt, group~variable, mean)
+
+THIS CAN BE DONE BY USING A COMBINATINO OF SAPPLY AND TAPPLY. DIGEST THE FOLLOW STATEMENT.
+
+     sapply(my.df[,c("age","pulse","height")], function(x) tapply(x, my.df$group, mean))
+
+     cast(my.melt, group~variable, mean, subset=variable==c("height","age"))
+     sapply(my.df[,c("height","age")], function(x) tapply(x, my.df$group, mean))
+
+     cast(my.melt, group~variable, mean, subset=variable==c("height","age"))
+
+(2) RESHAPE THE MTCARS DATA. 
+
+MELT, USING NAME, TRANMISSION TYPE AND CYLINDER AS ID. 
+
+     my.melt=melt(mtcars, id.vars=c("am", "cyl", "gear"))
+     my.melt
+
+MEAN BY TRANSMISSION TYPE
+
+     cast(my.melt, am~variable, mean)
+
+SUMMARIZE MEAN MPG, HORSEPOWER AND WEIGHT BY TRANSMISSION TYPE AND NUMBER OF CYLINDERS
+
+     cast(my.melt, am+cyl~variable, mean, subset=variable==c("mpg","hp"))
+
+I.4 MERGE FUNCTION. THE EXAMPLE ON CLASS NOTES FOR MERGING TWO DATA FRAMES. 
+
+FIRST CREATE TWO DATA FRAMES, ONE FOR SOME TRAITS, AND THE ONE FOR GENOTYPES. 
+
+    df1=data.frame(id=c("P1","P2","P3"), age=c(30,36,43), pulse=c(78.2,74.4,82.3), height=c(72,68,69))
+    df2=data.frame(id=c("P1","P2","P4"), SNP1=c("AC","CC","TT"), SNP2=c("CG", "CT", "AG"))
+    df1
+    df2
+
+WE CAN MERGE THE TWO DATA FRAMES THE "HARDER" WAY, AS FOLLOWING. NOTE THAT WE SPECIFY ROW NAMES
+AND USE THOSE TO SELECT ROWS. 
+
+    rownames(df1)=df1$id
+    rownames(df2)=df2$id
+    id.both=intersect(df1$id,df2$id)
+    cbind(df1[id.both,], df2[id.both,-1])
+
+OR WE CAN MERGE THEM USING "MERGE" FUNCTION:
+
+    merge(df1, df2, by="id")
+
+WE CAN SPECIFY WHAT TO RETAIN AFTER MERGING. PAY ATTANTION TO THE RESULTS. 
+
+    merge(df1, df2, by="id", all.x=TRUE)
+    merge(df1, df2, by="id", all.y=TRUE)
+    merge(df1, df2, by="id", all=TRUE)
+
+--------------------------------------
+II. BENCHMARKING
+--------------------------------------
+
+II.1. TRY THE PROC.TIME AND SYSTEM.TIME FUNCTIONS. 
+
+EXAMPLES FROM THE CLASS NOTES. COMPARE DIFFERENT WAYS TO COMPUTE ROW SUMS.
+
+FIRST DEFINE THREE FUNCTIONS FOR COMPUTING ROW SUMS. 
+
+     rowSum1=function(x) {
+        n0 = nrow(x)
+	result = rep(0, n0)
+  	for(i in 1:n0) {
+    	      result[i]=sum(x[i,])
+  	}
+	return(result)
+     }
+
+     rowSum2=function(x) {
+       return(apply(x, 1, sum))
+     }
+
+
+     rowSum3=function(x) {
+       return(rowSums(x))
+     }
+
+CREATE A BIG MATRIX
+
+     X=matrix(rnorm(6000000, mean=5, sd=1), ncol=6)
+
+TIME THE PROCEDURES 
+
+     ptm <- proc.time()
+     my.res <- rowSum1(X)
+     t1=proc.time() - ptm
+
+     ptm <- proc.time()
+     my.res <- rowSum2(X)
+     t2= proc.time() - ptm
+	    
+     ptm <- proc.time()
+     my.res <- rowSum3(X)
+     t3=proc.time() - ptm
+
+     rbind(t1,t2,t3)
+
+USE SYSTEM.TIME FUNCTION
+
+    system.time(rowSum1(X))
+    system.time(rowSum2(X))
+    system.time(rowSum3(X))
+
+
+II.2 performance boost with vectorization 
+
+COMPARE THE PERFORMANCE OF USING LOOPS AND VECTORIZATION. 
+
+FIRST DEFINE TWO FUNCTIONS FOR COMPUTING sums of two vectors of the same length. 
+
+      sum1=function(x1, x2) {
+        n=length(x1)
+	res=numeric(n)
+	for(i in 1:n) {
+	  res[i]=x1[i]+x2[i]
+	}
+	return(res)
+      }
+
+      sum2=function(x1, x2) {
+         return(x1+x2)
+      }
+
+RUN THE FOLLOWING SIMULATION TO COMPUTE THE PERFORMANCE OF THE TWO FUNCTIONS UNDER DIFFERENT LENGTHS OF INPUT VECTORS. 
+THIS IS SOMETHING TYPICAL IN A SIMULATION STUDY, E.G., COMPARISION UNDER DIFFERENT SCENARIOS. 
+
+     nx=c(1e4, 1e5, 5e5, 1e6, 5e6)
+     result=matrix(0, ncol=2, nrow=length(nx))
+     for(i in 1:length(nx)) {      
+           x1=x2=rnorm(nx[i])      
+	   result[i,1]=system.time(sum1(x1,x2))[1]
+	   result[i,2]=system.time(sum2(x1,x2))[1]
+      }
+
+      ## plot the results
+      matplot(nx, result, lwd=2, lty=1, col=1:2, type="b", log="x", pch=1:2,
+		  ylab="Computation time (seconds)", xlab="Length of input")
+      legend("topleft", legend=c("sum1", "sum2"), lwd=2, lty=1, col=1:2, pch=1:2)
+
+
